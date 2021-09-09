@@ -186,6 +186,8 @@ public class FirebaseLogin extends AppCompatActivity {
                         //assuming only patients register through the app
                         PatientUser newUser  = new PatientUser();
                         dbRef.setValue(newUser);
+                    Intent i = new Intent(FirebaseLogin.this,PatientPage.class);
+                    startActivity(i);
                     }
                     else if(selection.equals("Clinic")) {
                     Log.d("nosuchadmin", "there is no such clinical user");
