@@ -111,6 +111,8 @@ public class FirebaseLogin extends AppCompatActivity {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {
             Toast.makeText(FirebaseLogin.this, "There is an account logged in: " + user.getUid(), Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(FirebaseLogin.this,PatientPage.class);
+            startActivity(i);
         } else {
             createSignInPage(isClinicLogin);
         }
