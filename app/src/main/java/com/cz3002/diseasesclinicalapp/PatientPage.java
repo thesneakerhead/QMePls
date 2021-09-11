@@ -34,6 +34,8 @@ public class PatientPage extends AppCompatActivity {
     private Button joinQueueButton;
     private TextView queuePosText;
     private Button logoutButton;
+    private FirebaseUser loggedInUser;
+    private FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,14 +46,14 @@ public class PatientPage extends AppCompatActivity {
         joinQueueButton = findViewById(R.id.join_queue);
         queuePosText = findViewById(R.id.QueueText);
         logoutButton = findViewById(R.id.logout_button);
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
+        firebaseAuth = FirebaseAuth.getInstance();
+        loggedInUser = firebaseAuth.getCurrentUser();
         // Button to join queue
         joinQueueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    hndlr.joinQueue("a26df274-c10c-41a0-aec4-38d7d891d966",user.getUid())
+                    hndlr.joinQueue("a26df274-c10c-41a0-aec4-38d7d891d966",loggedInUser.getUid())
                             .thenApply(s->{
                                 Log.e("the result", s);
                                 return null;
@@ -61,7 +63,7 @@ public class PatientPage extends AppCompatActivity {
                 }
             }
         });
-        listenForQueueChanges("a26df274-c10c-41a0-aec4-38d7d891d966",user.getUid());
+        listenForQueueChanges("a26df274-c10c-41a0-aec4-38d7d891d966",loggedInUser.getUid());
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

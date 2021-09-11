@@ -44,17 +44,14 @@ import lombok.val;
 import static com.google.android.gms.common.util.CollectionUtils.listOf;
 
 public class FirebaseLogin extends AppCompatActivity {
-
-    private static int AUTH_REQUEST_CODE = 7192;
     private FirebaseDatabaseManager dbMngr;
     private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener listener;
     private List<AuthUI.IdpConfig> providers;
-    private List<FirebaseApp> appList;
     private ArrayAdapter adapter;
     private AutoCompleteTextView autoCompleteTextView;
     private String selection;
     private Button confirmButton;
+    private User loggedInUser;
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new FirebaseAuthUIActivityResultContract(),
             new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
@@ -65,26 +62,13 @@ public class FirebaseLogin extends AppCompatActivity {
                 }
             }
     );
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(listener!=null)firebaseAuth.removeAuthStateListener(listener);
-        super.onStop();
-
-    }
-
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         firebaseAuth = FirebaseAuth.getInstance();
         dbMngr = new FirebaseDatabaseManager(FirebaseLogin.this);
         super.onCreate(savedInstanceState);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user!=null)
         {
             Intent i = new Intent(FirebaseLogin.this,PatientPage.class);
@@ -123,12 +107,12 @@ public class FirebaseLogin extends AppCompatActivity {
         //init();
     }
 
-    private void init(Boolean isAdminLogin) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private void init(Boolean isClinicLogin) {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {
             Toast.makeText(FirebaseLogin.this, "There is an account logged in: " + user.getUid(), Toast.LENGTH_SHORT).show();
         } else {
-            createSignInPage(isAdminLogin);
+            createSignInPage(isClinicLogin);
         }
 
     }
@@ -137,16 +121,15 @@ public class FirebaseLogin extends AppCompatActivity {
         IdpResponse response = result.getIdpResponse();
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
-            FirebaseAuth mAuth = FirebaseAuth.getInstance();
-            FirebaseUser user = mAuth.getCurrentUser();
+            FirebaseUser user = firebaseAuth.getCurrentUser();
             //check if account is new/clinic/patient account
-            handleAccount(user.getUid());
+            navigateBasedOnAccount(user.getUid());
         } else {
 
         }
     }
 
-    private void handleAccount(String uid) {
+    private void navigateBasedOnAccount(String uid) {
 
         DatabaseReference dbRef = dbMngr.appDatabase.getReference("Users").child(uid);
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -156,7 +139,7 @@ public class FirebaseLogin extends AppCompatActivity {
                 {
                     Log.d("userexists", "This is not the first time signing in");
                     GenericTypeIndicator<User> t = new GenericTypeIndicator<User>(){};
-                    User loggedInUser = snapshot.getValue(t);
+                    loggedInUser = snapshot.getValue(t);
                     if(loggedInUser.isClinicAcc==true && selection.equals("Clinic"))
                     {
 
@@ -165,7 +148,6 @@ public class FirebaseLogin extends AppCompatActivity {
                     }
                     else if(loggedInUser.isClinicAcc==false && selection.equals("Patient"))
                     {
-                        //unmountDatabases();
                         Intent i = new Intent(FirebaseLogin.this,PatientPage.class);
                         startActivity(i);
                     }
