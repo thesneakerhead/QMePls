@@ -78,10 +78,8 @@ public class PatientPage extends AppCompatActivity {
 
     public void listenForQueueChanges(String clinicUID,String patientUID)
     {
-        dbMngr.clinicDatabase.getReference("clinicDictionary")
-                .child(clinicUID)
-                .child("clinicQueue")
-                .addValueEventListener(new ValueEventListener() {
+        DatabaseReference dbRef = dbMngr.getDatabaseReference("clinic","clinicDictionary",clinicUID,"clinicQueue");
+        dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue()!=null){
