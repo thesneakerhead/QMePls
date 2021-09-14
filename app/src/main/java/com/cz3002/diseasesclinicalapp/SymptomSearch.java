@@ -10,9 +10,12 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Client;
@@ -31,8 +34,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+
+
+
 
 
 public class SymptomSearch extends AppCompatActivity {
@@ -51,7 +58,10 @@ public class SymptomSearch extends AppCompatActivity {
         Index index = client.getIndex("symptoms");
 
         EditText editText = findViewById(R.id.edit_text);
-        ListView listView = findViewById(R.id.list_view);
+        ListView listViewTop = findViewById(R.id.list_view_top);
+        ListView listViewBottom = findViewById(R.id.list_view_bottom);
+
+        List<String> selectedListOfSymptoms = new ArrayList<>();
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -62,7 +72,7 @@ public class SymptomSearch extends AppCompatActivity {
                         list.add(document.getString("Symptoms"));
                     }
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(SymptomSearch.this, android.R.layout.simple_list_item_1, list);
-                    listView.setAdapter(arrayAdapter);
+                    listViewTop.setAdapter(arrayAdapter);
                 } else {
                     Log.d(TAG, "failed to get document");
                 }
@@ -100,7 +110,7 @@ public class SymptomSearch extends AppCompatActivity {
                                 String disease = jsonObject.getString("Symptoms");
                                 list.add(disease);
                                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(SymptomSearch.this, android.R.layout.simple_list_item_1, list);
-                                listView.setAdapter(arrayAdapter);
+                                listViewTop.setAdapter(arrayAdapter);
 
                             }
                         } catch (JSONException jsonException) {
@@ -113,6 +123,27 @@ public class SymptomSearch extends AppCompatActivity {
             }
 
         });
+
+        listViewTop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selectedSymptom = listViewTop.getItemAtPosition(position).toString();
+                editText.getText().clear();
+                Log.d(TAG, selectedSymptom);
+                selectedListOfSymptoms.add(selectedSymptom);
+                Log.d("checkList", selectedListOfSymptoms.toString());
+
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter(SymptomSearch.this, android.R.layout.simple_list_item_1, selectedListOfSymptoms);
+                listViewBottom.setAdapter(arrayAdapter);
+
+
+                //adapter.dismiss(); // If you want to close the adapter
+
+            }
+
+
+        });
+
 
 
     }

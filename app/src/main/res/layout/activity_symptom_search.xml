@@ -14,9 +14,22 @@
         android:hint="Search..."/>
 
     <ListView
+        android:id="@+id/list_view_top"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list_view"/>
+        android:layout_height="219dp"
+        android:layout_weight="0.1" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Selected Symptoms"
+        android:textSize="30sp"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_view_bottom"
+        android:layout_weight="1"/>
 
 
 </LinearLayout>
