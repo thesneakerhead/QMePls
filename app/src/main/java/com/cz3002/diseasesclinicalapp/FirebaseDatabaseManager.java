@@ -35,13 +35,12 @@ public class FirebaseDatabaseManager {
             this.clinicDBApp = FirebaseApp.getInstance("clinicDB");
             this.appDatabase = FirebaseDatabase.getInstance(this.appDBApp);
             this.clinicDatabase=FirebaseDatabase.getInstance(this.clinicDBApp);
-            getAllClinicInfo();
         }
         catch(IllegalStateException e)
         {
             instatiateAppDatabase(context);
             instantiateClinicDatabase(context);
-            getAllClinicInfo();
+
         }
 
 
@@ -72,29 +71,7 @@ public class FirebaseDatabaseManager {
         this.clinicDBApp=initApp;
         this.clinicDatabase = FirebaseDatabase.getInstance(initApp);
     }
-    public void getAllClinicInfo(){
 
-        this.clinicDatabase.getReference("clinicDictionary").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getValue()!=null) {
-                    HashMap<String, Object> clinics = (HashMap<String, Object>) snapshot.getValue();
-                    for (HashMap.Entry<String, Object> entry : clinics.entrySet()) {
-                       Map singleClinic = (Map)entry.getValue();
-                        Log.d("clinicname", (String)singleClinic.get("clinicName"));
-                       ClinicInfo singleClinicInfo = new ClinicInfo((String)singleClinic.get("clinicName"),(ArrayList<String>)singleClinic.get("clinicQueue"),(ArrayList<Double>)singleClinic.get("latLng"));
-                       clinicInfos.add(singleClinicInfo);
-                    }
-                }
-                Log.d("all info", clinicInfos.toString());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
     public DatabaseReference getDatabaseReference(String dbName, String parentReference,String childReference)
     {
         DatabaseReference dbRef = null;

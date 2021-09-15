@@ -18,5 +18,10 @@ import lombok.Setter;
 public class ClinicInfo {
     public String clinicName;
     public ArrayList<String> clinicQueue;
-    public ArrayList<Double> latLng;
+    public Double lat;
+    public Double lng;
+    public String telNo;
+    public String address;
+    public String openingHour;
+    public String closingHour;
 }

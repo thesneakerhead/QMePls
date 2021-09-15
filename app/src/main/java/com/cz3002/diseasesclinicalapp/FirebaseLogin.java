@@ -226,11 +226,13 @@ public class FirebaseLogin extends AppCompatActivity {
     {
         Update2Firebase update = new Update2Firebase();
         ClinicInfo clinicInfo = new ClinicInfo();
-        ArrayList<Double> Latlng = new ArrayList<Double>();
-        Latlng.add(103.872312298306994);
-        Latlng.add(1.36995099695439);
+        clinicInfo.setLat(103.872312298306994);
+        clinicInfo.setLng(1.36995099695439);
+        clinicInfo.setOpeningHour("0830");
+        clinicInfo.setClosingHour("1330");
+        clinicInfo.setAddress("321 testing road");
+        clinicInfo.setTelNo("6777 7777");
         clinicInfo.setClinicName("Changi General Hospital");
-        clinicInfo.setLatLng(Latlng);
         update.uploadClinicsToFirebase(clinicInfo,FirebaseLogin.this);
     }
 }
