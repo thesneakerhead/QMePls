@@ -29,6 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import lombok.SneakyThrows;
+
 public class PatientPage extends AppCompatActivity {
     private FirebaseDatabaseManager dbMngr;
     private Button joinQueueButton;
@@ -36,6 +38,7 @@ public class PatientPage extends AppCompatActivity {
     private Button logoutButton;
     private FirebaseUser loggedInUser;
     private FirebaseAuth firebaseAuth;
+    @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

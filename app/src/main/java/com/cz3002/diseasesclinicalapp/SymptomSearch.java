@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.Editable;
@@ -38,23 +40,24 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
+import lombok.SneakyThrows;
 
 
 public class SymptomSearch extends AppCompatActivity {
 
     public static final String TAG = "YOUR-TAG-NAME";
 
+    @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptom_search);
+        ApplicationInfo ai = SymptomSearch.this.getPackageManager()
+                .getApplicationInfo(SymptomSearch.this.getPackageName(), PackageManager.GET_META_DATA);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference docRef = db.collection("symptoms");
-
-        Client client = new Client("NLPL9FXAUP", "1885b5d9b84bdb8be21ebdd26134f5d1");
+        Client client = new Client(ai.metaData.getString("SymptomAppId"), ai.metaData.getString("SymptomApiKey"));
         Index index = client.getIndex("symptoms");
 
         EditText editText = findViewById(R.id.edit_text);

@@ -1,6 +1,7 @@
 package com.cz3002.diseasesclinicalapp;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Observable;
 
 import androidx.annotation.NonNull;
@@ -28,8 +29,7 @@ public class Update2Firebase {
 
     // stores clinicUUID,clinicName key,value pair in clinicDictionary and uploads to firebase
     // returns the clinicUUID
-    public String uploadClinicsToFirebase(ClinicInfo clinicInfo,Context context)
-    {
+    public String uploadClinicsToFirebase(ClinicInfo clinicInfo,Context context) throws PackageManager.NameNotFoundException {
         FirebaseDatabaseManager dbManager = new FirebaseDatabaseManager(context);
         String clinicUUID = generateUUID();
         

@@ -21,10 +21,13 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import lombok.SneakyThrows;
+
 public class ClinicPage extends AppCompatActivity {
     private Button nextPatientButton;
     private TextView queueText;
     private FirebaseDatabaseManager dbMngr;
+    @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

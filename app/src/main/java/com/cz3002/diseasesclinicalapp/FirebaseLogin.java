@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -67,6 +68,7 @@ public class FirebaseLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         firebaseAuth = FirebaseAuth.getInstance();
         dbMngr = new FirebaseDatabaseManager(FirebaseLogin.this);
+        uploadClinicInfo();
         super.onCreate(savedInstanceState);
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user!=null)
@@ -222,8 +224,7 @@ public class FirebaseLogin extends AppCompatActivity {
 
     }
     //to be deleted, used to upload clinic info.
-    public void uploadClinicInfo()
-    {
+    public void uploadClinicInfo() throws PackageManager.NameNotFoundException {
         Update2Firebase update = new Update2Firebase();
         ClinicInfo clinicInfo = new ClinicInfo();
         clinicInfo.setLat(103.872312298306994);
@@ -232,7 +233,7 @@ public class FirebaseLogin extends AppCompatActivity {
         clinicInfo.setClosingHour("1330");
         clinicInfo.setAddress("321 testing road");
         clinicInfo.setTelNo("6777 7777");
-        clinicInfo.setClinicName("Changi General Hospital");
+        clinicInfo.setClinicName("Test Hospital 1");
         update.uploadClinicsToFirebase(clinicInfo,FirebaseLogin.this);
     }
 }

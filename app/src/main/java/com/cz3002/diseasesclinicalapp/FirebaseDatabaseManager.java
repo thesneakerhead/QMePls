@@ -1,6 +1,8 @@
 package com.cz3002.diseasesclinicalapp;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -26,8 +28,9 @@ public class FirebaseDatabaseManager {
     public FirebaseDatabase appDatabase;
     public FirebaseDatabase clinicDatabase;
     public ObservableArrayList<ClinicInfo> clinicInfos;
-    public FirebaseDatabaseManager(Context context)
-    {
+    private ApplicationInfo ai;
+    public FirebaseDatabaseManager(Context context) throws PackageManager.NameNotFoundException {
+        ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
         clinicInfos = new ObservableArrayList<ClinicInfo>();
         try
         {
@@ -49,10 +52,11 @@ public class FirebaseDatabaseManager {
 
     public void instatiateAppDatabase(Context context)
     {
+
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setApplicationId("1:303895926741:android:255d85c415995442eb0f5c")
-                .setApiKey("AIzaSyBMGgbLppI7TeD2vp-CKASPalrlyqDENTs")
-                .setDatabaseUrl("https://ase-clinic-default-rtdb.asia-southeast1.firebasedatabase.app")
+                .setApplicationId(ai.metaData.getString("AppAppId"))
+                .setApiKey(ai.metaData.getString("AppApiKey"))
+                .setDatabaseUrl(ai.metaData.getString("AppDbURL"))
                 .build();
         FirebaseApp.initializeApp(context, options,"appDB");
         FirebaseApp initApp = FirebaseApp.getInstance("appDB");
@@ -62,9 +66,9 @@ public class FirebaseDatabaseManager {
     public void instantiateClinicDatabase(Context context)
     {
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setApplicationId("1:561455279142:android:bac250ac7ac82919d74ae7")
-                .setApiKey("AIzaSyCGhi0cxS-VvZTHQlRtTp3tyl4so1kLc_g")
-                .setDatabaseUrl("https://clinicaldatabase-49662-default-rtdb.asia-southeast1.firebasedatabase.app")
+                .setApplicationId(ai.metaData.getString("ClinicAppId"))
+                .setApiKey(ai.metaData.getString("ClinicApiKey"))
+                .setDatabaseUrl(ai.metaData.getString("ClinicDbURL"))
                 .build();
         FirebaseApp.initializeApp(context, options,"clinicDB");
         FirebaseApp initApp = FirebaseApp.getInstance("clinicDB");

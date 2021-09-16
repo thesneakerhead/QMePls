@@ -24,6 +24,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="ClinicAppId"
+            android:value="${ClinicAppId}"/>
+        <meta-data
+            android:name="ClinicApiKey"
+            android:value="${ClinicApiKey}"/>
+        <meta-data
+            android:name="ClinicDbURL"
+            android:value="${ClinicDbURL}"/>
+        <meta-data
+            android:name="AppAppId"
+            android:value="${AppAppId}"/>
+        <meta-data
+            android:name="AppApiKey"
+            android:value="${AppApiKey}"/>
+        <meta-data
+            android:name="AppDbURL"
+            android:value="${AppDbURL}"/>
+        <meta-data
+            android:name="SymptomAppId"
+            android:value="${SymptomAppId}"/>
+        <meta-data
+            android:name="SymptomApiKey"
+            android:value="${SymptomApiKey}"/>
+
     </application>
 
 </manifest>
