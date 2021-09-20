@@ -133,8 +133,23 @@ public class SymptomSearch extends AppCompatActivity {
                 String selectedSymptom = listViewTop.getItemAtPosition(position).toString();
                 editText.getText().clear();
                 Log.d(TAG, selectedSymptom);
-                selectedListOfSymptoms.add(selectedSymptom);
-                Log.d("checkList", selectedListOfSymptoms.toString());
+                if (selectedListOfSymptoms.size()<5)
+                {
+                    if (selectedListOfSymptoms.contains(selectedSymptom) == false)
+                    {
+                        selectedListOfSymptoms.add(selectedSymptom);
+                        Log.d("checkList", selectedListOfSymptoms.toString());
+                    }
+                    else
+                    {
+                        Log.d("Duplicate", "Duplicate Selection");
+                    }
+
+                }
+                else
+                {
+                    Log.d("Max Reached", "Maximum Selection Count of 5 Reached");
+                }
 
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter(SymptomSearch.this, android.R.layout.simple_list_item_1, selectedListOfSymptoms);
                 listViewBottom.setAdapter(arrayAdapter);
@@ -145,6 +160,19 @@ public class SymptomSearch extends AppCompatActivity {
             }
 
 
+        });
+
+        listViewBottom.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String removeSelectedSymptom = listViewBottom.getItemAtPosition(position).toString();
+                Log.d(TAG, removeSelectedSymptom);
+                selectedListOfSymptoms.remove(removeSelectedSymptom);
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter(SymptomSearch.this, android.R.layout.simple_list_item_1, selectedListOfSymptoms);
+                listViewBottom.setAdapter(arrayAdapter);
+
+
+            }
         });
 
 
