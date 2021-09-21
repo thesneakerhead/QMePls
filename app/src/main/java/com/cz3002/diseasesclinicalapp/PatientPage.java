@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +39,7 @@ public class PatientPage extends AppCompatActivity {
     private Button logoutButton;
     private FirebaseUser loggedInUser;
     private FirebaseAuth firebaseAuth;
+    private FloatingActionButton fab;
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class PatientPage extends AppCompatActivity {
         joinQueueButton = findViewById(R.id.join_queue);
         queuePosText = findViewById(R.id.QueueText);
         logoutButton = findViewById(R.id.logout_button);
+        fab = findViewById(R.id.fab);
         firebaseAuth = FirebaseAuth.getInstance();
         loggedInUser = firebaseAuth.getCurrentUser();
         // Button to join queue
@@ -74,6 +77,13 @@ public class PatientPage extends AppCompatActivity {
             }
         });
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(PatientPage.this, SymptomSearch.class);
+                startActivity(i);
+            }
+        });
 
 
 
