@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableList;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.GenericTypeIndicator;
@@ -25,6 +29,7 @@ import lombok.SneakyThrows;
 
 public class ClinicPage extends AppCompatActivity {
     private Button nextPatientButton;
+    private TextView signoutButton;
     private TextView queueText;
     private FirebaseDatabaseManager dbMngr;
     @SneakyThrows
@@ -36,6 +41,7 @@ public class ClinicPage extends AppCompatActivity {
         HttpRequestHandler hndlr = new HttpRequestHandler();
         Log.d("clinicpage", "thisisclinicpage");
         nextPatientButton = findViewById(R.id.dequeue_button);
+        signoutButton = findViewById(R.id.sign_out);
         queueText = findViewById(R.id.queue_text);
         listenForQueueChanges("a26df274-c10c-41a0-aec4-38d7d891d966");
         nextPatientButton.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +58,12 @@ public class ClinicPage extends AppCompatActivity {
                 }
             }
         });
+        signoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
     }
     public void listenForQueueChanges(String clinicUID)
     {
@@ -65,16 +77,32 @@ public class ClinicPage extends AppCompatActivity {
                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                             ArrayList<String> queue = snapshot.getValue(t);
                             //set display text to number of people in the queue
-                            queueText.setText(String.valueOf(queue.size()));
+                            //queueText.setText(String.valueOf(queue.size()));
+
+                            String queueStr = getString(R.string.queue, String.valueOf(queue.size()));
+                            queueText.setText(queueStr);
+
                         }
                         else{
-                            queueText.setText("Theres no patients queueing!");
+                            String queueStr = getString(R.string.queue, "0");
+                            queueText.setText(queueStr);
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
+                    }
+                });
+    }
+    private void signOut()
+    {
+        AuthUI.getInstance()
+                .signOut(ClinicPage.this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Intent i = new Intent(ClinicPage.this,FirebaseLogin.class);
+                        startActivity(i);
                     }
                 });
     }
