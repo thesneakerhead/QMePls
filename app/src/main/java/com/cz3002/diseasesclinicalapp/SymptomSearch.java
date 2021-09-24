@@ -15,8 +15,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.algolia.search.saas.AlgoliaException;
@@ -26,6 +28,8 @@ import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,6 +39,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -46,6 +51,9 @@ import lombok.SneakyThrows;
 public class SymptomSearch extends AppCompatActivity {
 
     public static final String TAG = "YOUR-TAG-NAME";
+    int chipIDcounter=0;
+    List<String> selectedListOfSymptoms;
+
 
     @SneakyThrows
     @Override
@@ -62,9 +70,10 @@ public class SymptomSearch extends AppCompatActivity {
 
         EditText editText = findViewById(R.id.edit_text);
         ListView listViewTop = findViewById(R.id.list_view_top);
-        ListView listViewBottom = findViewById(R.id.list_view_bottom);
+        ChipGroup chip_group = findViewById(R.id.chip_group);
+        selectedListOfSymptoms = new ArrayList<>();
 
-        List<String> selectedListOfSymptoms = new ArrayList<>();
+
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -76,10 +85,10 @@ public class SymptomSearch extends AppCompatActivity {
                     }
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(SymptomSearch.this, android.R.layout.simple_list_item_1, list);
                     listViewTop.setAdapter(arrayAdapter);
+
                 } else {
                     Log.d(TAG, "failed to get document");
                 }
-
 
             }
 
@@ -127,41 +136,48 @@ public class SymptomSearch extends AppCompatActivity {
 
         });
 
+
         listViewTop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selectedSymptom = listViewTop.getItemAtPosition(position).toString();
                 editText.getText().clear();
                 Log.d(TAG, selectedSymptom);
-                if (selectedListOfSymptoms.size()<5)
-                {
-                    if (selectedListOfSymptoms.contains(selectedSymptom) == false)
-                    {
+                if (selectedListOfSymptoms.size() < 5) {
+                    if (selectedListOfSymptoms.contains(selectedSymptom) == false) {
                         selectedListOfSymptoms.add(selectedSymptom);
                         Log.d("checkList", selectedListOfSymptoms.toString());
-                    }
-                    else
-                    {
+
+                        //Create new chip once symptom is selected
+                        Chip chip= new Chip(SymptomSearch.this);
+                        chip.setText(selectedSymptom);
+                        chip.setCloseIconEnabled(true);
+//                chip.setBackgroundColor();
+
+                        chip.setOnCloseIconClickListener(new View.OnClickListener(){
+                            @Override
+                            public void onClick(View v) {
+                                int viewId = v.getId();
+                                String debug = selectedListOfSymptoms.remove(viewId);
+                                Log.d(TAG, "onClick: removed item" + debug);
+                                chip_group.removeView(v);
+                                Log.d(TAG, "onClick: id" + viewId);
+                                Log.d(TAG, "onClick: remaining list" + selectedListOfSymptoms.toString());
+                            }
+                        });
+                        chip_group.addView(chip);
+                    } else {
                         Log.d("Duplicate", "Duplicate Selection");
                     }
 
-                }
-                else
-                {
+                } else {
                     Log.d("Max Reached", "Maximum Selection Count of 5 Reached");
                 }
-
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter(SymptomSearch.this, android.R.layout.simple_list_item_1, selectedListOfSymptoms);
-                listViewBottom.setAdapter(arrayAdapter);
-
-
-                //adapter.dismiss(); // If you want to close the adapter
+                selectedListOfSymptoms.add(selectedSymptom);
 
             }
-
-
         });
-
+/*
         listViewBottom.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -172,11 +188,14 @@ public class SymptomSearch extends AppCompatActivity {
                 listViewBottom.setAdapter(arrayAdapter);
 
 
-            }
-        });
 
+            }
+        });*/
 
 
     }
 
-}
+
+
+ }
+
