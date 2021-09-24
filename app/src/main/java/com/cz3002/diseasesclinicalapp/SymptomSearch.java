@@ -139,9 +139,32 @@ public class SymptomSearch extends AppCompatActivity {
                     {
                         selectedListOfSymptoms.add(selectedSymptom);
                         Log.d("checkList", selectedListOfSymptoms.toString());
+<<<<<<< Updated upstream
                     }
                     else
                     {
+=======
+
+                        //Create new chip once symptom is selected
+                        Chip chip= new Chip(SymptomSearch.this);
+                        chip.setText(selectedSymptom);
+                        chip.setCloseIconEnabled(true);
+                        //chip.setBackgroundColor();
+
+                        chip.setOnCloseIconClickListener(new View.OnClickListener(){
+                            @Override
+                            public void onClick(View v) {
+                                int viewId = v.getId();
+                                String debug = selectedListOfSymptoms.remove(viewId);
+                                Log.d(TAG, "onClick: removed item" + debug);
+                                chip_group.removeView(v);
+                                Log.d(TAG, "onClick: id" + viewId);
+                                Log.d(TAG, "onClick: remaining list" + selectedListOfSymptoms.toString());
+                            }
+                        });
+                        chip_group.addView(chip);
+                    } else {
+>>>>>>> Stashed changes
                         Log.d("Duplicate", "Duplicate Selection");
                     }
 
