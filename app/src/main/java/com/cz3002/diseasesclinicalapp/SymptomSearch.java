@@ -48,6 +48,7 @@ import lombok.SneakyThrows;
 public class SymptomSearch extends AppCompatActivity {
 
     public static final String TAG = "YOUR-TAG-NAME";
+    int chipIdCounter=1;
 
     @SneakyThrows
     @Override
@@ -134,6 +135,7 @@ public class SymptomSearch extends AppCompatActivity {
         });
 
         listViewTop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            Chip chip;
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selectedSymptom = listViewTop.getItemAtPosition(position).toString();
@@ -145,32 +147,31 @@ public class SymptomSearch extends AppCompatActivity {
                         selectedListOfSymptoms.add(selectedSymptom);
                         Log.d("checkList", selectedListOfSymptoms.toString());
                         //Create new chip once symptom is selected
-                        Chip chip = new Chip(SymptomSearch.this);
+                        chip = new Chip(SymptomSearch.this);
                         chip.setText(selectedSymptom);
                         chip.setCloseIconEnabled(true);
                         //chip.setBackgroundColor();
-
-                        chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                int viewId = v.getId();
-                                String debug = selectedListOfSymptoms.remove(viewId);
-                                Log.d(TAG, "onClick: removed item" + debug);
-                                chip_group.removeView(v);
-                                Log.d(TAG, "onClick: id" + viewId);
-                                Log.d(TAG, "onClick: remaining list" + selectedListOfSymptoms.toString());
-                            }
-                        });
                         chip_group.addView(chip);
                     } else {
                         Log.d("Duplicate", "Duplicate Selection");
                     }
-
                 }
                 else
                 {
                     Log.d("Max Reached", "Maximum Selection Count of 5 Reached");
                 }
+                chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Chip tempChip = (Chip)v;
+                        chip_group.removeView(v);
+                        if(selectedListOfSymptoms.contains(tempChip.getText())){
+                            selectedListOfSymptoms.remove(tempChip.getText());
+                        }
+                        Log.d(TAG, "onClick: remaining list" + selectedListOfSymptoms.toString());
+                    }
+
+                });
 
 /*                ArrayAdapter<String> arrayAdapter = new ArrayAdapter(SymptomSearch.this, android.R.layout.simple_list_item_1, selectedListOfSymptoms);
                 listViewBottom.setAdapter(arrayAdapter);*/
@@ -178,8 +179,10 @@ public class SymptomSearch extends AppCompatActivity {
 
             }
 
-
+            
         });
+
+  
 
 /*        listViewBottom.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
