@@ -26,6 +26,8 @@ import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,6 +48,7 @@ import lombok.SneakyThrows;
 public class SymptomSearch extends AppCompatActivity {
 
     public static final String TAG = "YOUR-TAG-NAME";
+    int chipIdCounter=1;
 
     @SneakyThrows
     @Override
@@ -62,7 +65,11 @@ public class SymptomSearch extends AppCompatActivity {
 
         EditText editText = findViewById(R.id.edit_text);
         ListView listViewTop = findViewById(R.id.list_view_top);
+        ChipGroup chip_group = findViewById(R.id.chip_group);
+
+/*
         ListView listViewBottom = findViewById(R.id.list_view_bottom);
+*/
 
         List<String> selectedListOfSymptoms = new ArrayList<>();
 
@@ -128,6 +135,7 @@ public class SymptomSearch extends AppCompatActivity {
         });
 
         listViewTop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            Chip chip;
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selectedSymptom = listViewTop.getItemAtPosition(position).toString();
@@ -135,34 +143,48 @@ public class SymptomSearch extends AppCompatActivity {
                 Log.d(TAG, selectedSymptom);
                 if (selectedListOfSymptoms.size()<5)
                 {
-                    if (selectedListOfSymptoms.contains(selectedSymptom) == false)
-                    {
+                    if (selectedListOfSymptoms.contains(selectedSymptom) == false) {
                         selectedListOfSymptoms.add(selectedSymptom);
                         Log.d("checkList", selectedListOfSymptoms.toString());
-                    }
-                    else
-                    {
+                        //Create new chip once symptom is selected
+                        chip = new Chip(SymptomSearch.this);
+                        chip.setText(selectedSymptom);
+                        chip.setCloseIconEnabled(true);
+                        //chip.setBackgroundColor();
+                        chip_group.addView(chip);
+                    } else {
                         Log.d("Duplicate", "Duplicate Selection");
                     }
-
                 }
                 else
                 {
                     Log.d("Max Reached", "Maximum Selection Count of 5 Reached");
                 }
+                chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Chip tempChip = (Chip)v;
+                        chip_group.removeView(v);
+                        if(selectedListOfSymptoms.contains(tempChip.getText())){
+                            selectedListOfSymptoms.remove(tempChip.getText());
+                        }
+                        Log.d(TAG, "onClick: remaining list" + selectedListOfSymptoms.toString());
+                    }
 
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter(SymptomSearch.this, android.R.layout.simple_list_item_1, selectedListOfSymptoms);
-                listViewBottom.setAdapter(arrayAdapter);
+                });
 
-
+/*                ArrayAdapter<String> arrayAdapter = new ArrayAdapter(SymptomSearch.this, android.R.layout.simple_list_item_1, selectedListOfSymptoms);
+                listViewBottom.setAdapter(arrayAdapter);*/
                 //adapter.dismiss(); // If you want to close the adapter
 
             }
 
-
+            
         });
 
-        listViewBottom.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+  
+
+/*        listViewBottom.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String removeSelectedSymptom = listViewBottom.getItemAtPosition(position).toString();
@@ -173,7 +195,7 @@ public class SymptomSearch extends AppCompatActivity {
 
 
             }
-        });
+        });*/
 
 
 

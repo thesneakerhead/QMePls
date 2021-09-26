@@ -14,6 +14,8 @@ public class SymptomCard {
     public String clinicUID;
     public String date;
     public String status;//ONGOING,COMPLETED or CANCELLED
+
+
 }
 
 
