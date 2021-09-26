@@ -143,16 +143,23 @@ public class FirebaseLogin extends AppCompatActivity {
                 {
                     Log.d("userexists", "This is not the first time signing in");
                     GenericTypeIndicator<User> t = new GenericTypeIndicator<User>(){};
+                    GenericTypeIndicator<PatientUser> p = new GenericTypeIndicator<PatientUser>(){};
                     loggedInUser = snapshot.getValue(t);
                     if(loggedInUser.isClinicAcc==true && selection.equals("Clinic"))
                     {
-
                         Intent i = new Intent(FirebaseLogin.this,ClinicPage.class);
                         startActivity(i);
                     }
                     else if(loggedInUser.isClinicAcc==false && selection.equals("Patient"))
                     {
-                        Intent i = new Intent(FirebaseLogin.this,PatientPage.class);
+                        PatientUser user = snapshot.getValue(p);
+                        Intent i;
+                        if(user.getName()!=null){
+                            i = new Intent(FirebaseLogin.this, PatientPage.class);
+                        }
+                        else {
+                            i = new Intent(FirebaseLogin.this, AddInfoActivity.class);
+                        }
                         startActivity(i);
                     }
                     else{
@@ -172,7 +179,7 @@ public class FirebaseLogin extends AppCompatActivity {
                         //assuming only patients register through the app
                         PatientUser newUser  = new PatientUser();
                         dbRef.setValue(newUser);
-                    Intent i = new Intent(FirebaseLogin.this,PatientPage.class);
+                    Intent i = new Intent(FirebaseLogin.this,AddInfoActivity.class);
                     startActivity(i);
                     }
                     else if(selection.equals("Clinic")) {

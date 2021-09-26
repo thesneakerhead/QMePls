@@ -11,21 +11,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PatientUser extends User {
     public ArrayList<SymptomCard> symptomCards;
+    public String name;
     public PatientUser()
     {
         this.isClinicAcc = false;
     }
-    public void addSymptomCard(SymptomCard symptomCard)
-    {
-        if(this.symptomCards.isEmpty())
-        {
-            this.symptomCards = new ArrayList<SymptomCard>();
-            this.symptomCards.add(symptomCard);
-        }
-        else
-        {
-            this.symptomCards.add(symptomCard);
-        }
-    }
-
 }

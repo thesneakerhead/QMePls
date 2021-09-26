@@ -13,8 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DiseasesClinicalApp">
-        <activity android:name=".SymptomSearch"
-            android:exported="true"></activity>
+        <activity android:name=".AddInfoActivity"></activity>
+        <activity
+            android:name=".SymptomSearch"
+            android:exported="true" />
         <activity android:name=".ClinicPage" />
         <activity android:name=".PatientPage" />
         <activity android:name=".FirebaseLogin">
@@ -24,31 +26,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="ClinicAppId"
-            android:value="${ClinicAppId}"/>
+            android:value="${ClinicAppId}" />
         <meta-data
             android:name="ClinicApiKey"
-            android:value="${ClinicApiKey}"/>
+            android:value="${ClinicApiKey}" />
         <meta-data
             android:name="ClinicDbURL"
-            android:value="${ClinicDbURL}"/>
+            android:value="${ClinicDbURL}" />
         <meta-data
             android:name="AppAppId"
-            android:value="${AppAppId}"/>
+            android:value="${AppAppId}" />
         <meta-data
             android:name="AppApiKey"
-            android:value="${AppApiKey}"/>
+            android:value="${AppApiKey}" />
         <meta-data
             android:name="AppDbURL"
-            android:value="${AppDbURL}"/>
+            android:value="${AppDbURL}" />
         <meta-data
             android:name="SymptomAppId"
-            android:value="${SymptomAppId}"/>
+            android:value="${SymptomAppId}" />
         <meta-data
             android:name="SymptomApiKey"
-            android:value="${SymptomApiKey}"/>
-
+            android:value="${SymptomApiKey}" />
     </application>
 
 </manifest>
