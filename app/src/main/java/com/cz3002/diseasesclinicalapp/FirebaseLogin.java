@@ -68,7 +68,6 @@ public class FirebaseLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         firebaseAuth = FirebaseAuth.getInstance();
         dbMngr = new FirebaseDatabaseManager(FirebaseLogin.this);
-        uploadClinicInfo();
         super.onCreate(savedInstanceState);
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user!=null)
@@ -126,14 +125,15 @@ public class FirebaseLogin extends AppCompatActivity {
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
             FirebaseUser user = firebaseAuth.getCurrentUser();
+            //Log.e("test", user.getDisplayName());
             //check if account is new/clinic/patient account
-            navigateBasedOnAccount(user.getUid());
+            navigateBasedOnAccount(user.getUid(),user.getProviderId());
         } else {
 
         }
     }
 
-    private void navigateBasedOnAccount(String uid) {
+    private void navigateBasedOnAccount(String uid, String providerId) {
 
         DatabaseReference dbRef = dbMngr.appDatabase.getReference("Users").child(uid);
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -158,7 +158,19 @@ public class FirebaseLogin extends AppCompatActivity {
                             i = new Intent(FirebaseLogin.this, PatientPage.class);
                         }
                         else {
-                            i = new Intent(FirebaseLogin.this, AddInfoActivity.class);
+                            if (providerId.equals("phone")) {
+                                i = new Intent(FirebaseLogin.this, AddInfoActivity.class);
+                            }
+                            else if (firebaseAuth.getCurrentUser().getDisplayName()!= null || firebaseAuth.getCurrentUser().getDisplayName()!="")
+                            {
+                                user.setName(firebaseAuth.getCurrentUser().getDisplayName());
+                                dbRef.setValue(user);
+                                i = new Intent(FirebaseLogin.this, PatientPage.class);
+                            }
+                            else
+                            {
+                                i = new Intent(FirebaseLogin.this, AddInfoActivity.class);
+                            }
                         }
                         startActivity(i);
                     }

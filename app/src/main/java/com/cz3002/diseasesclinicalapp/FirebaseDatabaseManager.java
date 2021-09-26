@@ -45,10 +45,7 @@ public class FirebaseDatabaseManager {
             instantiateClinicDatabase(context);
 
         }
-
-
     }
-
 
     public void instatiateAppDatabase(Context context)
     {
@@ -121,6 +118,7 @@ public class FirebaseDatabaseManager {
         }
         return dbRef;
     }
+
 
 
 

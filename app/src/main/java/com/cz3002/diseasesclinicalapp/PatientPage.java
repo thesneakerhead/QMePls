@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import lombok.Data;
 import lombok.SneakyThrows;
 
 public class PatientPage extends AppCompatActivity {
@@ -40,6 +41,8 @@ public class PatientPage extends AppCompatActivity {
     private FirebaseUser loggedInUser;
     private FirebaseAuth firebaseAuth;
     private FloatingActionButton fab;
+    private TextView nameText;
+    private DatabaseReference userDbRef;
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +55,26 @@ public class PatientPage extends AppCompatActivity {
         queuePosText = findViewById(R.id.QueueText);
         logoutButton = findViewById(R.id.logout_button);
         fab = findViewById(R.id.fab);
+        nameText = findViewById(R.id.nameText);
         firebaseAuth = FirebaseAuth.getInstance();
         loggedInUser = firebaseAuth.getCurrentUser();
         // Button to join queue
+        userDbRef = dbMngr.getDatabaseReference("app","Users",loggedInUser.getUid());
+        userDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue()!=null)
+                {
+                    PatientUser curPatientUser = snapshot.getValue(PatientUser.class);
+                    nameText.setText(curPatientUser.getName());
+                }
+            }
+            
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         joinQueueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
