@@ -1,6 +1,7 @@
 package com.cz3002.diseasesclinicalapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableList;
@@ -9,7 +10,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,16 +30,28 @@ import com.google.firebase.database.ValueEventListener;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import lombok.SneakyThrows;
 
 public class ClinicPage extends AppCompatActivity {
     private Button nextPatientButton;
+    private Button walkInPatient;
     private TextView signoutButton;
     private TextView queueText;
+    private TextView patientNames;
+    private TextView patientIndex;
     private FirebaseDatabaseManager dbMngr;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    public ArrayList<String> names;
+    public ArrayList<String> index;
+    private EditText walkInName;
+    private Button confirm, cancel;
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+    //private List<String> names = new ArrayList<>();
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +64,32 @@ public class ClinicPage extends AppCompatActivity {
         nextPatientButton = findViewById(R.id.dequeue_button);
         signoutButton = findViewById(R.id.sign_out);
         queueText = findViewById(R.id.queue_text);
+        patientNames = findViewById(R.id.patient_name);
+        names = new ArrayList<>();
+        patientIndex = findViewById(R.id.patient_index);
+        index = new ArrayList<>();
+        walkInPatient = findViewById(R.id.add_walkin);
+
+
+        //add names here
+        names.add("John");
+        names.add("Alice");
+        names.add("Peter");
+
+        //display names & index
+        String nameStr = "";
+        String indexStr = "";
+        int count = 0;
+        for (String i : names){
+            nameStr = nameStr + i + "\n";
+            count += 1;
+            indexStr = indexStr + count + "\n";
+        }
+        patientNames.setText(nameStr);
+        patientIndex.setText(indexStr);
+
         dbMngr.getDatabaseReference("app","Users",mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.getValue()!=null)
@@ -84,6 +125,15 @@ public class ClinicPage extends AppCompatActivity {
                 signOut();
             }
         });
+
+        walkInPatient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addWalkinPatient();
+            }
+        });
+
+
     }
     public void listenForQueueChanges(String clinicUID)
     {
@@ -124,5 +174,23 @@ public class ClinicPage extends AppCompatActivity {
                         startActivity(i);
                     }
                 });
+    }
+    public void addWalkinPatient(){
+        dialogBuilder = new AlertDialog.Builder(this);
+
+        final View walkinPopUpView = getLayoutInflater().inflate(R.layout.walkin_popup,null);
+        walkInName = walkinPopUpView.findViewById(R.id.walkin_name);
+        confirm = walkinPopUpView.findViewById(R.id.confirm);
+        cancel = walkinPopUpView.findViewById(R.id.cancel);
+
+        dialogBuilder.setView(walkinPopUpView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 }
