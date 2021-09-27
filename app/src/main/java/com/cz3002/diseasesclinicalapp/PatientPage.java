@@ -69,7 +69,7 @@ public class PatientPage extends AppCompatActivity {
                     nameText.setText(curPatientUser.getName());
                 }
             }
-            
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
