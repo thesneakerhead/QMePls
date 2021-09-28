@@ -118,6 +118,32 @@ public class FirebaseDatabaseManager {
         }
         return dbRef;
     }
+    public void addToNameDictionary(String uid,String name)
+    {
+        DatabaseReference dbRef = getDatabaseReference("app","Public","nameDictionary");
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.getValue()!=null)
+                        {
+                            GenericTypeIndicator<HashMap<String,String>> t = new GenericTypeIndicator<HashMap<String,String>>(){};
+                            HashMap nameDict = snapshot.getValue(t);
+                            nameDict.put(uid,name);
+                            dbRef.setValue(nameDict);
+                        }
+                        else{
+                            HashMap<String,String> nameDict = new HashMap<String,String>();
+                            nameDict.put(uid,name);
+                            dbRef.setValue(nameDict);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
 
 
 

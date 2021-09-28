@@ -43,6 +43,7 @@ public class PatientPage extends AppCompatActivity {
     private FloatingActionButton fab;
     private TextView nameText;
     private DatabaseReference userDbRef;
+    private PatientUser curPatientUser;
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class PatientPage extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue()!=null)
                 {
-                    PatientUser curPatientUser = snapshot.getValue(PatientUser.class);
+                    curPatientUser = snapshot.getValue(PatientUser.class);
                     nameText.setText(curPatientUser.getName());
                 }
             }
@@ -82,6 +83,7 @@ public class PatientPage extends AppCompatActivity {
                     hndlr.joinQueue("a26df274-c10c-41a0-aec4-38d7d891d966",loggedInUser.getUid())
                             .thenApply(s->{
                                 Log.e("the result", s);
+                                dbMngr.addToNameDictionary(loggedInUser.getUid(),curPatientUser.getName());
                                 return null;
                             });
                 } catch (JsonProcessingException e) {
