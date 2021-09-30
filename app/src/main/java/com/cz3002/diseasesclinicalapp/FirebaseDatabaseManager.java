@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 public class FirebaseDatabaseManager {
@@ -143,6 +144,30 @@ public class FirebaseDatabaseManager {
 
                     }
                 });
+    }
+    public CompletableFuture<HashMap<String,String>> getNameDictionary()
+    {
+        final CompletableFuture<HashMap<String,String>> future = new CompletableFuture<HashMap<String,String>>();
+        DatabaseReference dbRef = getDatabaseReference("app","Public","nameDictionary");
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue()!=null)
+                {
+                    GenericTypeIndicator<HashMap<String,String>> t = new GenericTypeIndicator<HashMap<String,String>>(){};
+                    HashMap<String,String> tempDict = snapshot.getValue(t);
+                    future.complete(tempDict);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return future;
     }
 
 
