@@ -55,6 +55,7 @@ public class SymptomSearch extends AppCompatActivity {
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptom_search);
         ApplicationInfo ai = SymptomSearch.this.getPackageManager()
@@ -69,6 +70,12 @@ public class SymptomSearch extends AppCompatActivity {
         ListView listViewTop = findViewById(R.id.list_view_top);
         ChipGroup chip_group = findViewById(R.id.chip_group);
         Button symptom_button =findViewById(R.id.symptom_button);
+//        symptom_button.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(SymptomSearch.this, MapActivity.class);
+//                SymptomSearch.this.startActivity(intent);            }
+//        });
 
 /*
         ListView listViewBottom = findViewById(R.id.list_view_bottom);
@@ -185,19 +192,14 @@ public class SymptomSearch extends AppCompatActivity {
             
         });
 
-        symptom_button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                openActivity();
-            }
-        });
 
 
     }
-
-    private void openActivity() {
-        Intent intent = new Intent(this, MapActivity.class);
-        startActivity(intent);
+    public void buttonClickFunction(View view) {
+        Intent intent = new Intent(SymptomSearch.this, MapsActivity.class);
+        SymptomSearch.this.startActivity(intent);
     }
+
+
 
 }

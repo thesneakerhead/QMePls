@@ -122,6 +122,7 @@
             android:layout_height="wrap_content"
             android:text="Done"
             android:textColor="@color/white"
+            android:onClick="buttonClickFunction"
             />
 
     </LinearLayout>

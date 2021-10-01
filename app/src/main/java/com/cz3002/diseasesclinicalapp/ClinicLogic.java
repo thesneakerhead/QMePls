@@ -23,7 +23,7 @@ public class ClinicLogic {
     ArrayList<JSONObject> getClinics() {
         ArrayList<JSONObject> allClinics = new ArrayList<JSONObject>();
         try {
-            GeoJsonLayer clinicLayer = new GeoJsonLayer(MapActivity.mMap, R.raw.clinics_geo, clinicDataContext);
+            GeoJsonLayer clinicLayer = new GeoJsonLayer(MapsActivity.mMap, R.raw.clinics_geo, clinicDataContext);
 
             for (GeoJsonFeature feature : clinicLayer.getFeatures()) {
                 JSONObject clinic = new JSONObject();
