@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.nfc.Tag;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -66,6 +68,7 @@ public class SymptomSearch extends AppCompatActivity {
         EditText editText = findViewById(R.id.edit_text);
         ListView listViewTop = findViewById(R.id.list_view_top);
         ChipGroup chip_group = findViewById(R.id.chip_group);
+        Button symptom_button =findViewById(R.id.symptom_button);
 
 /*
         ListView listViewBottom = findViewById(R.id.list_view_bottom);
@@ -182,23 +185,19 @@ public class SymptomSearch extends AppCompatActivity {
             
         });
 
-  
-
-/*        listViewBottom.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        symptom_button.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String removeSelectedSymptom = listViewBottom.getItemAtPosition(position).toString();
-                Log.d(TAG, removeSelectedSymptom);
-                selectedListOfSymptoms.remove(removeSelectedSymptom);
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter(SymptomSearch.this, android.R.layout.simple_list_item_1, selectedListOfSymptoms);
-                listViewBottom.setAdapter(arrayAdapter);
-
-
+            public void onClick(View v) {
+                openActivity();
             }
-        });*/
+        });
 
 
+    }
 
+    private void openActivity() {
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
     }
 
 }
