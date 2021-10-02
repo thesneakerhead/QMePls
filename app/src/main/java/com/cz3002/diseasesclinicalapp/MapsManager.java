@@ -1,8 +1,16 @@
 package com.cz3002.diseasesclinicalapp;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
 
-import com.google.android.gms.maps.model.Marker;
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.maps.android.data.geojson.GeoJsonFeature;
 import com.google.maps.android.data.geojson.GeoJsonLayer;
 
@@ -12,18 +20,61 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ClinicLogic {
-    private Context clinicDataContext;
-    public ClinicLogic(Context context) {
-        this.clinicDataContext = context;
+public class MapsManager {
+
+    private Context MapsManagerContext;
+    public MapsManager(Context context) {
+        this.MapsManagerContext = context;
     }
-    //public static ArrayList<JSONObject> allClinics = new ArrayList<>();
-    DistanceLogic distanceLogic = new DistanceLogic();
+
+    BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    String[] getClinicNames() {
+        //MapsManagerContext clinicLogic = new clinicLogic(MapsManagerContext);
+        String[] allNames = new String[5];
+        int i = 0;
+        ArrayList<JSONObject> all_clinic_data = getClinics();
+        try {
+
+            for (JSONObject c : all_clinic_data) {
+                String clinicName = c.getString("name");
+
+                allNames[i] = clinicName;
+                i++;
+
+            }
+            return allNames;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return allNames;
+    }
+
+    public double calculateDist(double x, double y) {
+        Location markerLoc = new Location("Marker");
+        markerLoc.setLatitude(x);
+        markerLoc.setLongitude(y);
+
+        Location currentLoc = new Location("Current");
+        //currentLoc.setLatitude(MapsActivity.liveLocation.latitude);
+        //currentLoc.setLongitude(MapsActivity.liveLocation.longitude);
+        currentLoc.setLatitude(1.3333);
+        currentLoc.setLongitude(103.6808);
+        double distance = currentLoc.distanceTo(markerLoc);
+        return distance;
+    }
 
     ArrayList<JSONObject> getClinics() {
         ArrayList<JSONObject> allClinics = new ArrayList<JSONObject>();
         try {
-            GeoJsonLayer clinicLayer = new GeoJsonLayer(MapsActivity.mMap, R.raw.clinics_geo, clinicDataContext);
+            GeoJsonLayer clinicLayer = new GeoJsonLayer(MapsActivity.mMap, R.raw.clinics_geo, MapsManagerContext);
 
             for (GeoJsonFeature feature : clinicLayer.getFeatures()) {
                 JSONObject clinic = new JSONObject();
@@ -67,13 +118,13 @@ public class ClinicLogic {
                 index++;
                 double lati = (double) clinic.get("lati");
                 double longit = (double) clinic.get("longi");
-                double point = distanceLogic.calculateDist(lati, longit);
+                double point = calculateDist(lati, longit);
                 String nameOfClinic = clinic.getString("name");
 
 
                 double minlati = (double) min.get("lati");
-                double minlongi = (double) min.get("lati");
-                double currentMin = distanceLogic.calculateDist(minlati, minlongi);
+                double minlongi = (double) min.get("longi");
+                double currentMin = calculateDist(minlati, minlongi);
 
                 if (point < currentMin) {
                     for (JSONObject a : nearestClinics) {
@@ -94,5 +145,6 @@ public class ClinicLogic {
 
         return nearestClinics;
     }
+
 
 }

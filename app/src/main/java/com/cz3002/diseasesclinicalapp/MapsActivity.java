@@ -21,6 +21,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import com.facebook.places.Places;
@@ -46,6 +49,10 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import kotlin.Metadata;
 import kotlin.jvm.internal.Intrinsics;
@@ -57,8 +64,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static GoogleMap mMap;
     private FusedLocationProviderClient mLocationClient;
     private FusedLocationProviderClient fusedLocationClient;
-    private int GPS_REQUEST_CODE=9001;
+    private int GPS_REQUEST_CODE = 9001;
     public static LatLng curLoc;
+
+    MapsManager mapsManager = new MapsManager(this);
 
 
     @Override
@@ -67,7 +76,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
         checkMyPermission();
-
 
 
         mLocationClient = new FusedLocationProviderClient(this);
@@ -88,26 +96,65 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void initMap() {
         if (isPermissionGranted) {
-            if(isGPSenable()){
+            if (isGPSenable()) {
                 // Obtain the SupportMapFragment and get notified when the map is ready to be used.
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
+
+                AutoCompleteTextView editText = findViewById(R.id.search);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, mapsManager.getClinicNames());
+                editText.setAdapter(adapter);
+
+                editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String selectedItem = (String) parent.getItemAtPosition(position);
+                        //Boolean found = searchLogic.findClinicSearch(selectedItem);
+
+                        // test search clinic
+                        ArrayList<JSONObject> all_clinic_data = mapsManager.getClinics();
+                        for (JSONObject a : all_clinic_data) {
+                            try {
+                                String clinic_name = a.getString("name");
+                                if (clinic_name.equals(selectedItem)) {
+                                    //System.out.println("True");
+                                    Double clinic_lat = a.getDouble("lati");
+                                    Double clinic_long = a.getDouble("longi");
+                                    LatLng clinicPos = new LatLng(clinic_lat, clinic_long);
+                                    mMap.addMarker(new MarkerOptions()
+                                            .position(clinicPos)
+                                            .title("Marker"));
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicPos));
+                                    break;
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        //System.out.println(selectedItem);
+
+
+                    }
+                });
+
                 mapFragment.getMapAsync(this);
                 getCurrLoc();
             }
         }
     }
 
-    private boolean isGPSenable(){
-        LocationManager locationManager= (LocationManager) getSystemService(LOCATION_SERVICE);
-        boolean providerEnable= locationManager.isProviderEnabled((LocationManager.GPS_PROVIDER));
-        if(providerEnable){
+    private boolean isGPSenable() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        boolean providerEnable = locationManager.isProviderEnabled((LocationManager.GPS_PROVIDER));
+        if (providerEnable) {
             return true;
-        } else{
-            AlertDialog alertDialog= new AlertDialog.Builder(this)
+        } else {
+            AlertDialog alertDialog = new AlertDialog.Builder(this)
                     .setTitle("GPS Permission")
                     .setMessage("GPS is required for the app to work. Please enable GPS")
-                    .setPositiveButton("Yes", ((dialogInterface, i) ->{
+                    .setPositiveButton("Yes", ((dialogInterface, i) -> {
                         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivityForResult(intent, GPS_REQUEST_CODE);
                     }))
@@ -117,6 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         return false;
     }
+
     @SuppressLint("MissingPermission")
     private void getCurrLoc() {
         mLocationClient.getLastLocation().addOnCompleteListener(task -> {
@@ -130,7 +178,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void gotoLocation(double latitude, double longitude) {
         LatLng curLoc = new LatLng(latitude, longitude);
 
-        CameraUpdate cameraUpdate= CameraUpdateFactory.newLatLngZoom(curLoc, 18);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 18);
         mMap.addMarker(new MarkerOptions().position(curLoc).title("Marker"));
         mMap.moveCamera(cameraUpdate);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -141,7 +189,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
                 Toast.makeText(MapsActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                isPermissionGranted=true;
+                isPermissionGranted = true;
             }
 
             @Override
@@ -165,6 +213,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        //MapsManager mapsManager = new MapsManager(this);
+        // test nearest 3 clinics
+        try {
+            ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics(3);
+            for (JSONObject b : nearest_clinic_data) {
+                try {
+                    String clinic_name = b.getString("name");
+                    Double clinic_lat = b.getDouble("lati");
+                    Double clinic_long = b.getDouble("longi");
+                    LatLng clinicPos = new LatLng(clinic_lat,clinic_long);
+                    mMap.addMarker(new MarkerOptions().position(clinicPos).title("Clinic Location")
+                            .icon(mapsManager.bitmapDescriptorFromVector(MapsActivity.this, R.drawable.ic_clinicmarker)));
+
+
+                    System.out.println(clinic_name);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -186,15 +257,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode ==GPS_REQUEST_CODE){
-            LocationManager locationManager =(LocationManager) getSystemService(LOCATION_SERVICE);
+        if (requestCode == GPS_REQUEST_CODE) {
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-            boolean providerEnable= locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            if(providerEnable){
+            boolean providerEnable = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            if (providerEnable) {
                 Toast.makeText(this, "GPS is enable", Toast.LENGTH_SHORT).show();
-            }else{
+            } else {
                 Toast.makeText(this, "Gps is not enabled", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+
 }

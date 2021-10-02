@@ -17,6 +17,15 @@
         >
     </fragment>
 
+    <AutoCompleteTextView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_round"
+        android:completionThreshold="1"
+        android:hint="Select a clinic"
+        tools:ignore="MissingConstraints" />
+
     <FrameLayout
     android:id="@+id/sheet"
     android:layout_width="match_parent"
