@@ -30,6 +30,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -41,8 +46,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import lombok.SneakyThrows;
 
@@ -51,6 +60,7 @@ public class SymptomSearch extends AppCompatActivity {
 
     public static final String TAG = "YOUR-TAG-NAME";
     int chipIdCounter=1;
+    ArrayList<String> selectedListOfSymptoms;
 
     @SneakyThrows
     @Override
@@ -81,7 +91,7 @@ public class SymptomSearch extends AppCompatActivity {
         ListView listViewBottom = findViewById(R.id.list_view_bottom);
 */
 
-        List<String> selectedListOfSymptoms = new ArrayList<>();
+        selectedListOfSymptoms = new ArrayList<>();
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -195,9 +205,45 @@ public class SymptomSearch extends AppCompatActivity {
 
 
     }
-    public void buttonClickFunction(View view) {
+    public void buttonClickFunction(View view) throws PackageManager.NameNotFoundException {
         Intent intent = new Intent(SymptomSearch.this, MapsActivity.class);
         SymptomSearch.this.startActivity(intent);
+        FirebaseDatabaseManager dbMngr = new FirebaseDatabaseManager(SymptomSearch.this);
+        DatabaseReference dbRef = dbMngr.getDatabaseReference("app","Users",
+                FirebaseAuth.getInstance().getCurrentUser().getUid());
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue()!=null)
+                {
+                    PatientUser user = snapshot.getValue(PatientUser.class);
+                    SymptomCard symCard = new SymptomCard();
+                    Date c = Calendar.getInstance().getTime();
+                    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    String formattedDate = df.format(c);
+                    symCard.setDate(formattedDate);
+                    symCard.setSymptoms(selectedListOfSymptoms);
+                    symCard.setClinicName("name placeholder");
+                    ArrayList<SymptomCard> symptomCards;
+                    if (user.getSymptomCards()!=null)
+                    {
+                        symptomCards = user.getSymptomCards();
+                    }
+                    else
+                    {
+                        symptomCards = new ArrayList<SymptomCard>();
+                    }
+                    symptomCards.add(symCard);
+                    user.setSymptomCards(symptomCards);
+                    dbRef.setValue(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 

@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PatientUser extends User {
     public ArrayList<SymptomCard> symptomCards;
+    public OngoingSymptomCard ongoingCard;
     public String name;
     public PatientUser()
     {

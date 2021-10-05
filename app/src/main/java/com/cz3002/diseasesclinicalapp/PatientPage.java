@@ -68,6 +68,7 @@ public class PatientPage extends AppCompatActivity {
                 {
                     curPatientUser = snapshot.getValue(PatientUser.class);
                     nameText.setText(curPatientUser.getName());
+                    displaySymptomCards();
                 }
             }
 
@@ -109,6 +110,11 @@ public class PatientPage extends AppCompatActivity {
 
 
 
+    }
+
+    private void displaySymptomCards() {
+        ArrayList<SymptomCard> symptomCards = curPatientUser.getSymptomCards();
+        OngoingSymptomCard ongoingCard = curPatientUser.getOngoingCard(); // this is null if the patient is not queuing for anything
     }
 
     public void listenForQueueChanges(String clinicUID,String patientUID)
