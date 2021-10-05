@@ -11,11 +11,8 @@ import lombok.Setter;
 @Setter
 public class SymptomCard {
     public ArrayList<String> symptoms;
-    public String clinicUID;
+    public String clinicName;
     public String date;
-    public String status;//ONGOING,COMPLETED or CANCELLED
-
-
 }
 
 
