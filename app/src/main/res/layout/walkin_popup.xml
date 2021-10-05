@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:background="@color/white"
+    android:padding="30dp"
     >
 
 
@@ -26,10 +27,12 @@
         android:layout_below="@id/walkin_text"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:background="@color/beige"
+        android:background="@drawable/rounded_input_box"
+        android:padding="10dp"
         android:drawableLeft="@drawable/queue_logo">
 
     </EditText>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +44,7 @@
             android:id="@+id/confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
+            android:layout_marginLeft="30dp"
             android:background="@drawable/roundedbutton"
             android:text="Confirm"
             android:textColor="@color/white" />
@@ -49,14 +52,14 @@
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginRight="60dp"
+            android:layout_marginRight="30dp"
             android:background="@drawable/roundedbutton"
             android:text="Cancel"
             android:textColor="@color/white" />

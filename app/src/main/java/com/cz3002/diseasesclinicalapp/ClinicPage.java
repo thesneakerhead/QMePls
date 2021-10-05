@@ -77,22 +77,7 @@ public class ClinicPage extends AppCompatActivity {
         clinic_Name = findViewById(R.id.clinic_name);
 
 
-//        //add names here
-//        names.add("John");
-//        names.add("Alice");
-//        names.add("Peter");
-//
-//        //display names & index
-//        String nameStr = "";
-//        String indexStr = "";
-//        int count = 0;
-//        for (String i : names){
-//            nameStr = nameStr + i + "\n";
-//            count += 1;
-//            indexStr = indexStr + count + "\n";
-//        }
-//        patientNames.setText(nameStr);
-//        patientIndex.setText(indexStr);
+
 
         dbMngr.getDatabaseReference("app","Users",mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 

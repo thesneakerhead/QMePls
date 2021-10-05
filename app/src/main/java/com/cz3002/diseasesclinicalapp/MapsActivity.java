@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.places.Places;
@@ -52,7 +53,11 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import kotlin.Metadata;
 import kotlin.jvm.internal.Intrinsics;
@@ -66,6 +71,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationClient;
     private int GPS_REQUEST_CODE = 9001;
     public static LatLng curLoc;
+    private TextView clinicname;
+    private TextView clinicaddr;
+    private TextView clinicpostal;
+    private TextView clinicnum;
+    private TextView clinicopening;
+    SimpleDateFormat formatter = new SimpleDateFormat("HHmm");
+    Date clinicOpen, clinicClose;
 
     MapsManager mapsManager = new MapsManager(this);
 
@@ -90,6 +102,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });
+
+
+        clinicname = findViewById(R.id.clinicname);
+        clinicaddr = findViewById(R.id.clinicaddr);
+        clinicpostal = findViewById(R.id.clinicpostal);
+        clinicnum = findViewById(R.id.clinicnum);
+        clinicopening = findViewById(R.id.clinicopening);
 
     }
 
@@ -217,12 +236,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //MapsManager mapsManager = new MapsManager(this);
         // test nearest 3 clinics
         try {
-            ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics(3);
+            System.out.println("1st try");
+            ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics(5);
             for (JSONObject b : nearest_clinic_data) {
                 try {
+                    System.out.println("2nd try");
                     String clinic_name = b.getString("name");
+                    clinicname.setText(clinic_name);
                     Double clinic_lat = b.getDouble("lati");
                     Double clinic_long = b.getDouble("longi");
+                    String clinic_addr = b.getString("address");
+                    clinicaddr.setText(clinic_addr);
+//                    String clinic_postal = b.getString("postalCode");
+//                    clinicpostal.setText(clinic_postal);
+                    String clinic_num = b.getString("tel");
+                    clinicnum.setText(clinic_num);
+
+
+                    String clinic_open = b.getString("openingHour");
+                    clinicopening.setText(clinic_open);
+                    String clinic_close = b.getString("closingHour");
+                    //clinicclose.setText(clinic_close);
                     LatLng clinicPos = new LatLng(clinic_lat,clinic_long);
                     mMap.addMarker(new MarkerOptions().position(clinicPos).title("Clinic Location")
                             .icon(mapsManager.bitmapDescriptorFromVector(MapsActivity.this, R.drawable.ic_clinicmarker)));
@@ -231,9 +265,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println(clinic_name);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                //} catch (ParseException e) {
+                    //e.printStackTrace();
                 }
             }
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
     }
@@ -268,6 +304,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
 
 
 }

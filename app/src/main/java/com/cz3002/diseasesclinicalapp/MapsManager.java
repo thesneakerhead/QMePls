@@ -18,11 +18,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MapsManager {
 
     private Context MapsManagerContext;
+    Date clinicOpen, clinicClose;
     public MapsManager(Context context) {
         this.MapsManagerContext = context;
     }
@@ -83,11 +88,26 @@ public class MapsManager {
                 String clinicLngStr = feature.getProperty("long");
                 double clinicLat = Double.parseDouble(clinicLatStr);
                 double clinicLong = Double.parseDouble(clinicLngStr);
-                //System.out.println(clinicName);
+                String strClinicOpen = feature.getProperty("openingHour");
+                String strClinicClose = feature.getProperty("closingHour");
+                String clinicAddr = feature.getProperty("address");
+                //String clinicPostal = feature.getProperty("postalCode");
+                String clinicNum = feature.getProperty("tel");
+
+
+//                System.out.println("=======================Open: " + strClinicOpen);
+//                System.out.println("=======================Close: " + strClinicClose);
+
 
                 clinic.put("name", clinicName);
                 clinic.put("lati", clinicLat);
                 clinic.put("longi", clinicLong);
+                clinic.put("openingHour", strClinicOpen);
+                clinic.put("closingHour", strClinicClose);
+                clinic.put("address", clinicAddr);
+                //clinic.put("postalCode", clinicPostal);
+                clinic.put("tel", clinicNum);
+
 
                 allClinics.add(clinic);
             }
@@ -98,12 +118,14 @@ public class MapsManager {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+//        } catch (ParseException e) {
+//            e.printStackTrace();
         }
         return allClinics;
     }
 
 
-    ArrayList<JSONObject> getNearestClinics(int n) throws JSONException {
+    ArrayList<JSONObject> getNearestClinics(int n) throws JSONException, ParseException {
         ArrayList<JSONObject> nearestClinics = new ArrayList<JSONObject>();
         ArrayList<JSONObject> allClinics = getClinics();
         boolean repeated;
@@ -116,6 +138,14 @@ public class MapsManager {
             JSONObject min = allClinics.get(0);
             for (JSONObject clinic : allClinics) {
                 index++;
+                String open = (String) clinic.get("openingHour");
+                String close = (String) clinic.get("closingHour");
+
+                if (compareTime(open, close) == false){
+                    System.out.println("clinic close");
+                    continue;
+                };
+
                 double lati = (double) clinic.get("lati");
                 double longit = (double) clinic.get("longi");
                 double point = calculateDist(lati, longit);
@@ -146,5 +176,25 @@ public class MapsManager {
         return nearestClinics;
     }
 
+    public boolean compareTime(String opening, String closing) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("HHmm");
 
+        // get time 'now'
+        Calendar currDate = Calendar.getInstance();
+        String currTime = formatter.format(currDate.getTime());
+        Date dateClinicOpen = formatter.parse(opening);
+        Date dateClinicClose = formatter.parse(closing);
+        String strOpen = formatter.format(dateClinicOpen);
+        String strClose = formatter.format(dateClinicClose);
+
+        // System.out.println(currTime);
+        // display opened clinics
+        if ((currTime.compareTo(strOpen)>=0) && (currTime.compareTo(strClose)<=0)){
+            System.out.println("Open");
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
