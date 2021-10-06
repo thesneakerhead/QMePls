@@ -234,7 +234,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // test nearest 3 clinics
         try {
             System.out.println("1st try");
-            ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics(5);
+            ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics(3);
             for (JSONObject b : nearest_clinic_data) {
                 try {
                     System.out.println("2nd try");
