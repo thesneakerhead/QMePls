@@ -80,16 +80,6 @@ public class SymptomSearch extends AppCompatActivity {
         ListView listViewTop = findViewById(R.id.list_view_top);
         ChipGroup chip_group = findViewById(R.id.chip_group);
         Button symptom_button =findViewById(R.id.symptom_button);
-//        symptom_button.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(SymptomSearch.this, MapActivity.class);
-//                SymptomSearch.this.startActivity(intent);            }
-//        });
-
-/*
-        ListView listViewBottom = findViewById(R.id.list_view_bottom);
-*/
 
         selectedListOfSymptoms = new ArrayList<>();
 
@@ -106,10 +96,7 @@ public class SymptomSearch extends AppCompatActivity {
                 } else {
                     Log.d(TAG, "failed to get document");
                 }
-
-
             }
-
         });
 
         editText.addTextChangedListener(new TextWatcher() {
@@ -149,7 +136,6 @@ public class SymptomSearch extends AppCompatActivity {
 
                     }
                 });
-
             }
 
         });
@@ -190,20 +176,9 @@ public class SymptomSearch extends AppCompatActivity {
                         }
                         Log.d(TAG, "onClick: remaining list" + selectedListOfSymptoms.toString());
                     }
-
                 });
-
-/*                ArrayAdapter<String> arrayAdapter = new ArrayAdapter(SymptomSearch.this, android.R.layout.simple_list_item_1, selectedListOfSymptoms);
-                listViewBottom.setAdapter(arrayAdapter);*/
-                //adapter.dismiss(); // If you want to close the adapter
-
             }
-
-            
         });
-
-
-
     }
     public void buttonClickFunction(View view) throws PackageManager.NameNotFoundException {
         Intent intent = new Intent(SymptomSearch.this, MapsActivity.class);
@@ -245,7 +220,4 @@ public class SymptomSearch extends AppCompatActivity {
             }
         });
     }
-
-
-
 }
