@@ -233,33 +233,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //MapsManager mapsManager = new MapsManager(this);
         // test nearest 3 clinics
         try {
-            System.out.println("1st try");
-            ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics(3);
+            ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics();
             for (JSONObject b : nearest_clinic_data) {
                 try {
-                    System.out.println("2nd try");
                     String clinic_name = b.getString("name");
                     clinicname.setText(clinic_name);
                     Double clinic_lat = b.getDouble("lati");
                     Double clinic_long = b.getDouble("longi");
                     String clinic_addr = b.getString("address");
-                    clinicaddr.setText(clinic_addr);
-//                    String clinic_postal = b.getString("postalCode");
-//                    clinicpostal.setText(clinic_postal);
+                    clinicaddr.setText("Address: "+clinic_addr);
                     String clinic_num = b.getString("tel");
-                    clinicnum.setText(clinic_num);
+                    clinicnum.setText("Tel: "+clinic_num);
 
 
                     String clinic_open = b.getString("openingHour");
-                    clinicopening.setText(clinic_open);
                     String clinic_close = b.getString("closingHour");
-                    //clinicclose.setText(clinic_close);
+                    clinicopening.setText("Open from: " +clinic_open+ "H - "+clinic_close+"H");
+
                     LatLng clinicPos = new LatLng(clinic_lat,clinic_long);
-                    mMap.addMarker(new MarkerOptions().position(clinicPos).title("Clinic Location")
+                    mMap.addMarker(new MarkerOptions().position(clinicPos).title(clinic_name)
                             .icon(mapsManager.bitmapDescriptorFromVector(MapsActivity.this, R.drawable.ic_clinicmarker)));
 
-
-                    System.out.println(clinic_name);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 //} catch (ParseException e) {

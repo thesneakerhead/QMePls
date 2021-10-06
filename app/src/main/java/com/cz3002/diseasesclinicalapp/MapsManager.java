@@ -118,61 +118,70 @@ public class MapsManager {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
         }
         return allClinics;
     }
 
 
-    ArrayList<JSONObject> getNearestClinics(int n) throws JSONException, ParseException {
+    ArrayList<JSONObject> getNearestClinics() throws JSONException, ParseException {
         ArrayList<JSONObject> nearestClinics = new ArrayList<JSONObject>();
         ArrayList<JSONObject> allClinics = getClinics();
-        boolean repeated;
-        int index;
-        int indexClinic = 0;
+        int noClinics = allClinics.size();
+        int indexno=0;
 
-        for (int i = 0; i < n; i++) {
-            index = -1;
-            repeated = false;
-            JSONObject min = allClinics.get(0);
-            for (JSONObject clinic : allClinics) {
-                index++;
-                String open = (String) clinic.get("openingHour");
-                String close = (String) clinic.get("closingHour");
-
-                if (compareTime(open, close) == false){
-                    System.out.println("clinic close");
-                    continue;
-                };
-
-                double lati = (double) clinic.get("lati");
-                double longit = (double) clinic.get("longi");
-                double point = calculateDist(lati, longit);
-                String nameOfClinic = clinic.getString("name");
-
-
-                double minlati = (double) min.get("lati");
-                double minlongi = (double) min.get("longi");
-                double currentMin = calculateDist(minlati, minlongi);
-
-                if (point < currentMin) {
-                    for (JSONObject a : nearestClinics) {
-                        if (a.get("name").equals(nameOfClinic)) {
-                            repeated = true;
-                            break;
-                        }
-                    }
-                    if (repeated == false) {
-                        min = clinic;
-                        indexClinic = index;
-                    }
+        //removes all clinics that are closed
+        while (indexno<noClinics) {
+            indexno++;
+            for (JSONObject Clinic : allClinics) {
+                String open = (String) Clinic.get("openingHour");
+                String close = (String) Clinic.get("closingHour");
+                if (compareTime(open, close) == false) {
+                    allClinics.remove(Clinic);
+                    break;
                 }
             }
-            nearestClinics.add(min);
-            allClinics.remove(indexClinic);
         }
 
+
+        int index;
+        int indexClinic;
+
+        for (int i = 0; i < 3; i++) {
+            index = -1;
+            indexClinic=-1;
+
+            if (allClinics.size()>0) {
+                JSONObject min = allClinics.get(0);
+                for (JSONObject clinic : allClinics) {
+                    index++;
+                    double lati = (double) clinic.get("lati");
+                    double longit = (double) clinic.get("longi");
+                    double point = calculateDist(lati, longit);
+                    String nameOfClinic = clinic.getString("name");
+
+                    double minlati = (double) min.get("lati");
+                    double minlongi = (double) min.get("longi");
+                    double currentMin = calculateDist(minlati, minlongi);
+
+                    //calculating the nearest clinic from location in each loop
+                    if (point < currentMin) {
+
+                        min = clinic;
+                        indexClinic = index;
+
+                    }
+                }
+                //when the  first clinic is the shortest distance
+                if (indexClinic == -1 && allClinics.size() > 0) {
+                    nearestClinics.add(min);
+                    allClinics.remove(0);
+                } else if (indexClinic != -1 && allClinics.size() > 0) {
+                    nearestClinics.add(min);
+                    allClinics.remove(indexClinic);
+                }
+            }
+
+        }
         return nearestClinics;
     }
 
@@ -187,10 +196,10 @@ public class MapsManager {
         String strOpen = formatter.format(dateClinicOpen);
         String strClose = formatter.format(dateClinicClose);
 
-        // System.out.println(currTime);
+        System.out.println(currTime);
         // display opened clinics
         if ((currTime.compareTo(strOpen)>=0) && (currTime.compareTo(strClose)<=0)){
-            System.out.println("Open");
+
             return true;
         }
         else{
