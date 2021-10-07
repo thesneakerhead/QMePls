@@ -105,7 +105,6 @@
                 android:backgroundTint="@color/cobalt"
                 >
 
-
             </com.google.android.material.chip.ChipGroup>
 
         </LinearLayout>

@@ -54,7 +54,9 @@ public class SearchLogic {
                     e.printStackTrace();
                 }
             }
+            //ClinicCard(String selectedClinic);
 
         }
+
     }
 

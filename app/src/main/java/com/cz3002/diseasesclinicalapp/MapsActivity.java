@@ -106,9 +106,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         clinicpostal = findViewById(R.id.clinicpostal);
         clinicnum = findViewById(R.id.clinicnum);
         clinicopening = findViewById(R.id.clinicopening);
+        //findViewbyid(R.id.cliniccard)
+        //callCard(display card)
 
     }
 
+    //onclicklistener for cliniccard
+        //camerazoom to card
 
     private void initMap() {
         if (isPermissionGranted) {
@@ -150,6 +154,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         }
                         //System.out.println(selectedItem);
+
+                        //if no duplicate inside currentSearchList and not nearest default 3(){
+                            //CLINIC CARD 1:
+                      //  }
 
 
                     }
