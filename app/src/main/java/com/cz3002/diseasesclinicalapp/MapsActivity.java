@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationClient;
     private int GPS_REQUEST_CODE = 9001;
     public static LatLng curLoc;
+    private LinearLayout cliniccard;
     private TextView clinicname;
     private TextView clinicaddr;
     private TextView clinicpostal;
@@ -101,13 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
 
 
-        clinicname = findViewById(R.id.clinicname);
-        clinicaddr = findViewById(R.id.clinicaddr);
-        clinicpostal = findViewById(R.id.clinicpostal);
-        clinicnum = findViewById(R.id.clinicnum);
-        clinicopening = findViewById(R.id.clinicopening);
-        //findViewbyid(R.id.cliniccard)
-        //callCard(display card)
+
 
     }
 
@@ -237,26 +233,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        int cardno;
+        String cname;
+        String caddr;
+        String cnum;
+        String copening;
 
-        //MapsManager mapsManager = new MapsManager(this);
         // test nearest 3 clinics
         try {
             ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics();
+            cardno=0;
             for (JSONObject b : nearest_clinic_data) {
+                cname="clinicname";
+                caddr= "clinicaddr";
+                cnum= "clinicnum";
+                copening = "clinicopening";
+
                 try {
+                    //iterate each card number
+                    cardno++;
+                    cname += "" + cardno + "";
+                    caddr += "" + cardno + "";
+                    cnum += "" + cardno + "";
+                    copening += "" + cardno + "";
+
+                    //get the View ID
+                    int  cname_card = getResources().getIdentifier(cname, "id", getPackageName());
+                    int  caddr_card = getResources().getIdentifier(caddr, "id", getPackageName());
+                    int  cnum_card = getResources().getIdentifier(cnum, "id", getPackageName());
+                    int  copening_card = getResources().getIdentifier(copening, "id", getPackageName());
+                    //Find View ID
+                    clinicname = findViewById(cname_card);
+                    clinicaddr = findViewById(caddr_card);
+                    clinicnum = findViewById(cnum_card);
+                    clinicopening = findViewById(copening_card);
+
+                    //Printing of info
                     String clinic_name = b.getString("name");
                     clinicname.setText(clinic_name);
                     Double clinic_lat = b.getDouble("lati");
                     Double clinic_long = b.getDouble("longi");
                     String clinic_addr = b.getString("address");
-                    clinicaddr.setText("Address: "+clinic_addr);
+                    clinicaddr.setText(clinic_addr);
                     String clinic_num = b.getString("tel");
                     clinicnum.setText("Tel: "+clinic_num);
 
 
                     String clinic_open = b.getString("openingHour");
                     String clinic_close = b.getString("closingHour");
-                    clinicopening.setText("Open from: " +clinic_open+ "H - "+clinic_close+"H");
+                    clinicopening.setText(clinic_open+ "H - "+clinic_close+"H");
 
                     LatLng clinicPos = new LatLng(clinic_lat,clinic_long);
                     mMap.addMarker(new MarkerOptions().position(clinicPos).title(clinic_name)

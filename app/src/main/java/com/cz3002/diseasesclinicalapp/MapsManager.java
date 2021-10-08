@@ -196,7 +196,6 @@ public class MapsManager {
         String strOpen = formatter.format(dateClinicOpen);
         String strClose = formatter.format(dateClinicClose);
 
-        System.out.println(currTime);
         // display opened clinics
         if ((currTime.compareTo(strOpen)>=0) && (currTime.compareTo(strClose)<=0)){
 
