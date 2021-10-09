@@ -26,7 +26,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +48,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -79,13 +84,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LinearLayout cliniccard;
     private TextView clinicname;
     private TextView clinicaddr;
-    private TextView clinicpostal;
     private TextView clinicnum;
     private TextView clinicopening;
     SimpleDateFormat formatter = new SimpleDateFormat("HHmm");
     private static Marker clinicM1;
     private static Marker clinicM2;
     private static Marker  clinicMarkers[];
+    private ImageView bottomNav;
+    private ScrollView bottombar;
+    private static boolean minimized;
+
 
     MapsManager mapsManager = new MapsManager(this);
 
@@ -111,10 +119,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+
+
     }
 
-    //onclicklistener for cliniccard
-        //camerazoom to card
 
     private void initMap() {
         if (isPermissionGranted) {
@@ -123,87 +131,63 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
 
-                AutoCompleteTextView editText = findViewById(R.id.search);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_list_item_1, mapsManager.getClinicNames());
-                editText.setAdapter(adapter);
+                minimized=true;
+                bottomNav = findViewById(R.id.minimize);
+                bottomNav.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
+                        if (minimized) {
+                            System.out.println("true");
+                            bottombar = findViewById(R.id.bottombar);
+                            ViewGroup.LayoutParams bottombar2 = bottombar.getLayoutParams();
+                            bottombar2.height = 300;
+                            bottombar.setLayoutParams(bottombar2);
+                            minimized=false;
+                        }
+                        else {
+                            System.out.println("false");
+                            bottombar = findViewById(R.id.bottombar);
+                            ViewGroup.LayoutParams bottombar2 = bottombar.getLayoutParams();
+                            bottombar2.height = 1700;
+                            bottombar.setLayoutParams(bottombar2);
+                            minimized=true;
+                        }
+
+
+
+                    }
+                });
+
+
+                //camera zoom to clinic marker
                 LinearLayout card1 = findViewById(R.id.card1);
                 LinearLayout card2 = findViewById(R.id.card2);
                 LinearLayout card3 = findViewById(R.id.card3);
-
-                card1.setOnTouchListener(new View.OnTouchListener()
+                card1.setOnClickListener(new View.OnClickListener()
                 {
-
                     @Override
-                    public boolean onTouch(View v, MotionEvent event)
+                    public void onClick(View v)
                     {
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicMarkers[0].getPosition()));
-                        return false;
                     }
-
                 });
 
-                card2.setOnTouchListener(new View.OnTouchListener()
+                card2.setOnClickListener(new View.OnClickListener()
                 {
-
                     @Override
-                    public boolean onTouch(View v, MotionEvent event)
+                    public void onClick(View v)
                     {
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicMarkers[1].getPosition()));
-                        return false;
                     }
-
                 });
 
-                card3.setOnTouchListener(new View.OnTouchListener()
+                card3.setOnClickListener(new View.OnClickListener()
                 {
-
                     @Override
-                    public boolean onTouch(View v, MotionEvent event)
+                    public void onClick(View v)
                     {
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicMarkers[2].getPosition()));
-                        return false;
-                    }
-
-                });
-
-
-
-                editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String selectedItem = (String) parent.getItemAtPosition(position);
-                        //Boolean found = searchLogic.findClinicSearch(selectedItem);
-
-                        // test search clinic
-                        ArrayList<JSONObject> all_clinic_data = mapsManager.getClinics();
-                        for (JSONObject a : all_clinic_data) {
-                            try {
-                                String clinic_name = a.getString("name");
-                                if (clinic_name.equals(selectedItem)) {
-                                    //System.out.println("True");
-                                    Double clinic_lat = a.getDouble("lati");
-                                    Double clinic_long = a.getDouble("longi");
-                                    LatLng clinicPos = new LatLng(clinic_lat, clinic_long);
-                                    mMap.addMarker(new MarkerOptions()
-                                            .position(clinicPos)
-                                            .title("Marker"));
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicPos));
-                                    break;
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        //System.out.println(selectedItem);
-
-                        //if no duplicate inside currentSearchList and not nearest default 3(){
-                            //CLINIC CARD 1:
-                      //  }
-
-
                     }
                 });
 
