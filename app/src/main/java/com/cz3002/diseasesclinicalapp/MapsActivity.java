@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.navigation.Navigation;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -19,14 +20,16 @@ import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +45,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -58,6 +62,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,7 +86,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView clinicaddr;
     private TextView clinicnum;
     private TextView clinicopening;
+    SimpleDateFormat formatter = new SimpleDateFormat("HHmm");
+    private static Marker clinicM1;
+    private static Marker clinicM2;
+    private static Marker  clinicMarkers[];
     private ImageView bottomNav;
+    private ScrollView bottombar;
+    private static boolean minimized;
+
+
     MapsManager mapsManager = new MapsManager(this);
 
 
@@ -102,26 +115,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });
-        bottomNav = findViewById(R.id.minimize);
-        bottomNav.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("CLICKED");
-            }
-        });
 
-        Button centralizer = findViewById(R.id.centralizer);
-        centralizer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 13);
-                mMap.moveCamera(cameraUpdate);
-            }
-        });
+
+
+
+
+
     }
 
-    //onclicklistener for cliniccard
-        //camerazoom to card
 
     private void initMap() {
         if (isPermissionGranted) {
@@ -129,6 +130,66 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // Obtain the SupportMapFragment and get notified when the map is ready to be used.
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
+
+                minimized=true;
+                bottomNav = findViewById(R.id.minimize);
+                bottomNav.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (minimized) {
+                            System.out.println("true");
+                            bottombar = findViewById(R.id.bottombar);
+                            ViewGroup.LayoutParams bottombar2 = bottombar.getLayoutParams();
+                            bottombar2.height = 300;
+                            bottombar.setLayoutParams(bottombar2);
+                            minimized=false;
+                        }
+                        else {
+                            System.out.println("false");
+                            bottombar = findViewById(R.id.bottombar);
+                            ViewGroup.LayoutParams bottombar2 = bottombar.getLayoutParams();
+                            bottombar2.height = 1700;
+                            bottombar.setLayoutParams(bottombar2);
+                            minimized=true;
+                        }
+
+
+
+                    }
+                });
+
+
+                //camera zoom to clinic marker
+                LinearLayout card1 = findViewById(R.id.card1);
+                LinearLayout card2 = findViewById(R.id.card2);
+                LinearLayout card3 = findViewById(R.id.card3);
+                card1.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicMarkers[0].getPosition()));
+                    }
+                });
+
+                card2.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicMarkers[1].getPosition()));
+                    }
+                });
+
+                card3.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicMarkers[2].getPosition()));
+                    }
+                });
 
                 mapFragment.getMapAsync(this);
                 getCurrLoc();
@@ -169,9 +230,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void gotoLocation(double latitude, double longitude) {
         LatLng curLoc = new LatLng(latitude, longitude);
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 13);
-        mMap.addMarker(new MarkerOptions().position(curLoc).title("Current Location")
-                .icon(mapsManager.bitmapDescriptorFromVector(MapsActivity.this, R.drawable.ic_livemarker)));
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 18);
+        mMap.addMarker(new MarkerOptions().position(curLoc).title("Marker"));
         mMap.moveCamera(cameraUpdate);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
@@ -210,7 +270,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String caddr;
         String cnum;
         String copening;
-
+        clinicMarkers = new Marker[3];
         // test nearest 3 clinics
         try {
             ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics();
@@ -256,7 +316,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     clinicopening.setText(clinic_open+ "H - "+clinic_close+"H");
 
                     LatLng clinicPos = new LatLng(clinic_lat,clinic_long);
-                    mMap.addMarker(new MarkerOptions().position(clinicPos).title(clinic_name)
+                    clinicMarkers[cardno-1] = mMap.addMarker(new MarkerOptions().position(clinicPos).title(clinic_name)
                             .icon(mapsManager.bitmapDescriptorFromVector(MapsActivity.this, R.drawable.ic_clinicmarker)));
 
                 } catch (JSONException e) {

@@ -28,6 +28,7 @@
     </fragment>
 
     <ScrollView
+        android:id="@+id/bottombar"
         android:layout_width="match_parent"
         android:layout_height="450dp"
         android:background="@drawable/map_bottom_sheet_shape"
