@@ -117,8 +117,9 @@
                                 <!-- Title, secondary and supporting text -->
                                 <TextView
                                     android:id="@+id/clinicname1"
-                                    android:layout_width="150dp"
+
                                     android:layout_height="wrap_content"
+                                    android:layout_width="wrap_content"
                                     android:text=""
                                     android:textAppearance="?attr/textAppearanceHeadline6"
                                     android:textSize="16sp" />
@@ -221,8 +222,8 @@
                                 <!-- Title, secondary and supporting text -->
                                 <TextView
                                     android:id="@+id/clinicname2"
-                                    android:layout_width="150dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_width="wrap_content"
                                     android:text=""
                                     android:textAppearance="?attr/textAppearanceHeadline6"
                                     android:textSize="16sp" />
@@ -326,8 +327,8 @@
                                 <!-- Title, secondary and supporting text -->
                                 <TextView
                                     android:id="@+id/clinicname3"
-                                    android:layout_width="150dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_width="wrap_content"
                                     android:text=""
                                     android:textAppearance="?attr/textAppearanceHeadline6"
                                     android:textSize="16sp" />

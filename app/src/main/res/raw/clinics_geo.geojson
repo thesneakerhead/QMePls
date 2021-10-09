@@ -65,6 +65,28 @@
           0
         ]
       },
+      "id": "clinic_2"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Fullerton Health @ NTU",
+        "tel": "6793 6828",
+        "postalCode": "639801",
+        "address": "36 Nanyang Ave, #01-01/02 Nanyang Technological University, Singapore 639801",
+        "lat": 1.34536991705032,
+        "long": 103.682668844091,
+        "openingHour": "0000",
+        "closingHour": "2359"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.682668844091,
+          1.34536991705032,
+          0
+        ]
+      },
       "id": "clinic_3"
     },
     {

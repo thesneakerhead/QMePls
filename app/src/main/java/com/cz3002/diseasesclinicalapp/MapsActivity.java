@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -118,11 +119,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-
-
-
+        Button centralizer = findViewById(R.id.centralizer);
+        centralizer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 13);
+                mMap.moveCamera(cameraUpdate);
+            }
+        });
     }
 
+    //onclicklistener for cliniccard
+        //camerazoom to card
 
     private void initMap() {
         if (isPermissionGranted) {
@@ -230,8 +238,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void gotoLocation(double latitude, double longitude) {
         LatLng curLoc = new LatLng(latitude, longitude);
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 18);
-        mMap.addMarker(new MarkerOptions().position(curLoc).title("Marker"));
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 13);
+        mMap.addMarker(new MarkerOptions().position(curLoc).title("Current Location")
+                .icon(mapsManager.bitmapDescriptorFromVector(MapsActivity.this, R.drawable.ic_livemarker)));
         mMap.moveCamera(cameraUpdate);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }

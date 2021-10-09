@@ -1,6 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation = "vertical"
+    android:layout_marginBottom="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/beige"
+    tools:context=".SymptomSearch"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ABC Clinic"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textColor="@color/cobalt"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:drawableRight="@drawable/verified_logo"
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        />
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_profile_photo"
+        android:layout_marginTop="10dp"
+        >
+    </ImageView>
+
+    <!-- Signout button -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/signout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="signout"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="@color/cobalt"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:drawableRight="@drawable/ic_baseline_edit_24"
+            />
+
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="50dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            >
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="Patients"
+                    android:textColor="@color/cobalt"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/ic_users">
+
+                    </ImageView>
+                    <TextView
+                        android:id="@+id/queue_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5 in Queue"
+                        android:textColor="@color/cobalt"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        >
+                    </TextView>
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Name"
+                    android:textColor="@color/cobalt"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="30dp"
+                    android:text="Index"
+                    android:textColor="@color/cobalt"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:clickable="true">
+
+                <TextView
+                    android:id="@+id/patient_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Name 1"
+                    android:textColor="@color/cobalt"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/patient_index"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="30dp"
+                    android:text="Index 1"
+                    android:textColor="@color/cobalt"
+                    android:textSize="14sp" />
+            </TableRow>
+        </TableLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        >
+
+        <Button
+            android:id="@+id/dequeue_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Next Patient"
+            android:textColor="@color/white"
+            android:layout_marginRight="20dp"
+            android:paddingHorizontal="25dp"
+            />
+
+        <Button
+            android:id="@+id/add_walkin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Walk In"
+            android:textColor="@color/white"
+            android:drawableLeft="@drawable/walkin_logo"
+            />
+
+    </LinearLayout>
+</LinearLayout>
