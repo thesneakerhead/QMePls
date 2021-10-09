@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -81,8 +82,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView clinicnum;
     private TextView clinicopening;
     private ImageView bottomNav;
-
-
     MapsManager mapsManager = new MapsManager(this);
 
 
@@ -111,9 +110,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
-
-
+        Button centralizer = findViewById(R.id.centralizer);
+        centralizer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 13);
+                mMap.moveCamera(cameraUpdate);
+            }
+        });
     }
 
     //onclicklistener for cliniccard
@@ -125,48 +129,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // Obtain the SupportMapFragment and get notified when the map is ready to be used.
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
-
-//                AutoCompleteTextView editText = findViewById(R.id.search);
-//                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-//                        android.R.layout.simple_list_item_1, mapsManager.getClinicNames());
-//                editText.setAdapter(adapter);
-//
-//                editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        String selectedItem = (String) parent.getItemAtPosition(position);
-//                        //Boolean found = searchLogic.findClinicSearch(selectedItem);
-//
-//                        // test search clinic
-//                        ArrayList<JSONObject> all_clinic_data = mapsManager.getClinics();
-//                        for (JSONObject a : all_clinic_data) {
-//                            try {
-//                                String clinic_name = a.getString("name");
-//                                if (clinic_name.equals(selectedItem)) {
-//                                    //System.out.println("True");
-//                                    Double clinic_lat = a.getDouble("lati");
-//                                    Double clinic_long = a.getDouble("longi");
-//                                    LatLng clinicPos = new LatLng(clinic_lat, clinic_long);
-//                                    mMap.addMarker(new MarkerOptions()
-//                                            .position(clinicPos)
-//                                            .title("Marker"));
-//                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicPos));
-//                                    break;
-//                                }
-//
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                        //System.out.println(selectedItem);
-//
-//                        //if no duplicate inside currentSearchList and not nearest default 3(){
-//                            //CLINIC CARD 1:
-//                      //  }
-//
-//
-//                    }
-//                });
 
                 mapFragment.getMapAsync(this);
                 getCurrLoc();
@@ -207,8 +169,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void gotoLocation(double latitude, double longitude) {
         LatLng curLoc = new LatLng(latitude, longitude);
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 18);
-        mMap.addMarker(new MarkerOptions().position(curLoc).title("Marker"));
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 13);
+        mMap.addMarker(new MarkerOptions().position(curLoc).title("Current Location")
+                .icon(mapsManager.bitmapDescriptorFromVector(MapsActivity.this, R.drawable.ic_livemarker)));
         mMap.moveCamera(cameraUpdate);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }

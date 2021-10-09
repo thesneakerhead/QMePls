@@ -5,7 +5,7 @@
       "type": "Feature",
       "properties": {
         "name": "Chen Family Clinic",
-        "tel": "62812212",
+        "tel": "6281 2212",
         "postalCode": "550153",
         "address": "153 Serangoon North Ave 1, #01-490, Singapore 550153",
         "lat": 1.36995099695439,
@@ -26,30 +26,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Chungkiaw Clinic Pte Ltd",
-        "tel": "64662255",
-        "postalCode": "639801",
-        "address": "36 Nanyang Ave, #01-01/02 Nanyang Technological University, Singapore 639801",
-        "lat": 1.34536991705032,
-        "long": 103.682668844091,
-        "openingHour": "1300",
-        "closingHour": "1830"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.682668844091,
-          1.34536991705032,
-          0
-        ]
-      },
-      "id": "clinic_2"
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "name": "Herman Miller Medical Clinic & Surgery",
-        "tel": "67811868",
+        "tel": "6781 1868",
         "postalCode": "520825",
         "address": "825 Tampines Street 81, #01-50, Singapore 520825",
         "lat": 1.34943750949191,
@@ -65,19 +43,41 @@
           0
         ]
       },
+      "id": "clinic_2"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Fullerton Health @ NTU",
+        "tel": "6793 6828",
+        "postalCode": "639801",
+        "address": "36 Nanyang Ave, #01-01/02 Nanyang Technological University, Singapore 639801",
+        "lat": 1.34536991705032,
+        "long": 103.682668844091,
+        "openingHour": "0000",
+        "closingHour": "2359"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.682668844091,
+          1.34536991705032,
+          0
+        ]
+      },
       "id": "clinic_3"
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "Hope Family Clinic & Surgery",
-        "tel": "63691328",
+        "name": "Nanyang Centre Clinic",
+        "tel": "6791 0962",
         "postalCode": "640959",
         "address": "959 Jurong West Street 92, Singapore 640959",
         "lat": 1.34148123560942,
         "long": 103.690721731343,
         "openingHour": "0000",
-        "closingHour": "2359"
+        "closingHour": "1200"
       },
       "geometry": {
         "type": "Point",
@@ -92,14 +92,14 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Herman Hesse Medicine Clinic",
-        "tel": "63153323",
+        "name": "Apex Medical Centre",
+        "tel": "6791 2292",
         "postalCode": "640960",
         "address": "960 Jurong West Street 92, #01-172, Singapore 640960",
         "lat": 1.34138531152671,
         "long": 103.691459639169,
-        "openingHour": "0830",
-        "closingHour": "1800"
+        "openingHour": "0000",
+        "closingHour": "1200"
       },
       "geometry": {
         "type": "Point",
@@ -110,6 +110,50 @@
         ]
       },
       "id": "clinic_5"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Healthmark Pioneer Mall Clinic",
+        "tel": "6861 3100",
+        "postalCode": "640638",
+        "address": "638 Jurong West Street 61, #02-08, Singapore 640638",
+        "lat": 1.34169239237791,
+        "long": 103.697174842354,
+        "openingHour": "1200",
+        "closingHour": "2359"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.697174842354,
+          1.34169239237791,
+          0
+        ]
+      },
+      "id": "clinic_6"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Drs Koo, Fok & Associates",
+        "tel": "6862 2380",
+        "postalCode": "648310",
+        "address": "31 Jurong West Street 63, #02-04, Singapore 648310",
+        "lat": 1.3375870106289,
+        "long": 103.697321608176,
+        "openingHour": "1200",
+        "closingHour": "2359"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.697321608176,
+          1.3375870106289,
+          0
+        ]
+      },
+      "id": "clinic_7"
     }
   ]
 }

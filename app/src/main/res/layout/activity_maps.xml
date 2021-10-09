@@ -15,16 +15,18 @@
         android:layout_height="match_parent"
         tools:context=".MapsActivity"
         >
+
+        <Button
+            android:id="@+id/centralizer"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="top|right"
+            android:background="@drawable/bg_centralizer"
+            android:drawableLeft="@drawable/ic_centralizer"
+            android:elevation="2dp"
+            android:paddingLeft="9dp" />
     </fragment>
 
-    <!--    <AutoCompleteTextView-->
-    <!--        android:id="@+id/search"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:background="@drawable/button_round"-->
-    <!--        android:completionThreshold="1"-->
-    <!--        android:hint="Select a clinic"-->
-    <!--        tools:ignore="MissingConstraints" />-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="450dp"
