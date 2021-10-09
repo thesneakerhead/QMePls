@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -75,11 +78,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LinearLayout cliniccard;
     private TextView clinicname;
     private TextView clinicaddr;
-    private TextView clinicpostal;
     private TextView clinicnum;
     private TextView clinicopening;
-    SimpleDateFormat formatter = new SimpleDateFormat("HHmm");
-    Date clinicOpen, clinicClose;
+    private ImageView bottomNav;
+
 
     MapsManager mapsManager = new MapsManager(this);
 
@@ -101,6 +103,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });
+        bottomNav = findViewById(R.id.minimize);
+        bottomNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("CLICKED");
+            }
+        });
 
 
 
@@ -117,47 +126,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
 
-                AutoCompleteTextView editText = findViewById(R.id.search);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_list_item_1, mapsManager.getClinicNames());
-                editText.setAdapter(adapter);
-
-                editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String selectedItem = (String) parent.getItemAtPosition(position);
-                        //Boolean found = searchLogic.findClinicSearch(selectedItem);
-
-                        // test search clinic
-                        ArrayList<JSONObject> all_clinic_data = mapsManager.getClinics();
-                        for (JSONObject a : all_clinic_data) {
-                            try {
-                                String clinic_name = a.getString("name");
-                                if (clinic_name.equals(selectedItem)) {
-                                    //System.out.println("True");
-                                    Double clinic_lat = a.getDouble("lati");
-                                    Double clinic_long = a.getDouble("longi");
-                                    LatLng clinicPos = new LatLng(clinic_lat, clinic_long);
-                                    mMap.addMarker(new MarkerOptions()
-                                            .position(clinicPos)
-                                            .title("Marker"));
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicPos));
-                                    break;
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        //System.out.println(selectedItem);
-
-                        //if no duplicate inside currentSearchList and not nearest default 3(){
-                            //CLINIC CARD 1:
-                      //  }
-
-
-                    }
-                });
+//                AutoCompleteTextView editText = findViewById(R.id.search);
+//                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+//                        android.R.layout.simple_list_item_1, mapsManager.getClinicNames());
+//                editText.setAdapter(adapter);
+//
+//                editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        String selectedItem = (String) parent.getItemAtPosition(position);
+//                        //Boolean found = searchLogic.findClinicSearch(selectedItem);
+//
+//                        // test search clinic
+//                        ArrayList<JSONObject> all_clinic_data = mapsManager.getClinics();
+//                        for (JSONObject a : all_clinic_data) {
+//                            try {
+//                                String clinic_name = a.getString("name");
+//                                if (clinic_name.equals(selectedItem)) {
+//                                    //System.out.println("True");
+//                                    Double clinic_lat = a.getDouble("lati");
+//                                    Double clinic_long = a.getDouble("longi");
+//                                    LatLng clinicPos = new LatLng(clinic_lat, clinic_long);
+//                                    mMap.addMarker(new MarkerOptions()
+//                                            .position(clinicPos)
+//                                            .title("Marker"));
+//                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicPos));
+//                                    break;
+//                                }
+//
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        //System.out.println(selectedItem);
+//
+//                        //if no duplicate inside currentSearchList and not nearest default 3(){
+//                            //CLINIC CARD 1:
+//                      //  }
+//
+//
+//                    }
+//                });
 
                 mapFragment.getMapAsync(this);
                 getCurrLoc();
