@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.navigation.Navigation;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -19,6 +20,7 @@ import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -40,6 +42,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -54,6 +57,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -79,7 +83,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView clinicnum;
     private TextView clinicopening;
     SimpleDateFormat formatter = new SimpleDateFormat("HHmm");
-    Date clinicOpen, clinicClose;
+    private static Marker clinicM1;
+    private static Marker clinicM2;
+    private static Marker  clinicMarkers[];
 
     MapsManager mapsManager = new MapsManager(this);
 
@@ -121,6 +127,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                         android.R.layout.simple_list_item_1, mapsManager.getClinicNames());
                 editText.setAdapter(adapter);
+
+                LinearLayout card1 = findViewById(R.id.card1);
+                LinearLayout card2 = findViewById(R.id.card2);
+                LinearLayout card3 = findViewById(R.id.card3);
+
+                card1.setOnTouchListener(new View.OnTouchListener()
+                {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event)
+                    {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicMarkers[0].getPosition()));
+                        return false;
+                    }
+
+                });
+
+                card2.setOnTouchListener(new View.OnTouchListener()
+                {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event)
+                    {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicMarkers[1].getPosition()));
+                        return false;
+                    }
+
+                });
+
+                card3.setOnTouchListener(new View.OnTouchListener()
+                {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event)
+                    {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(clinicMarkers[2].getPosition()));
+                        return false;
+                    }
+
+                });
+
+
 
                 editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -238,7 +286,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String caddr;
         String cnum;
         String copening;
-
+        clinicMarkers = new Marker[3];
         // test nearest 3 clinics
         try {
             ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics();
@@ -284,7 +332,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     clinicopening.setText(clinic_open+ "H - "+clinic_close+"H");
 
                     LatLng clinicPos = new LatLng(clinic_lat,clinic_long);
-                    mMap.addMarker(new MarkerOptions().position(clinicPos).title(clinic_name)
+                    clinicMarkers[cardno-1] = mMap.addMarker(new MarkerOptions().position(clinicPos).title(clinic_name)
                             .icon(mapsManager.bitmapDescriptorFromVector(MapsActivity.this, R.drawable.ic_clinicmarker)));
 
                 } catch (JSONException e) {
