@@ -61,7 +61,7 @@ public class ClinicPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.clinic_page);
+        setContentView(R.layout.clinic);
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         dbMngr = new FirebaseDatabaseManager(ClinicPage.this);

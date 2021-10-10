@@ -49,7 +49,7 @@ public class PatientPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbMngr = new FirebaseDatabaseManager(PatientPage.this);
-        setContentView(R.layout.patient_page);
+        setContentView(R.layout.profile__page);
         initPatientPage();
         HttpRequestHandler hndlr = new HttpRequestHandler();
         joinQueueButton = findViewById(R.id.join_queue);
@@ -130,6 +130,7 @@ public class PatientPage extends AppCompatActivity {
                         if (queuePos < 0)
                         {
                             queuePosText.setText("you are no longer in the queue!");
+
                         }
                         else if(queuePos.equals(0))
                         {

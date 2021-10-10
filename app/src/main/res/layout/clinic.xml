@@ -10,6 +10,7 @@
     tools:context=".SymptomSearch"
     >
     <TextView
+        android:id="@+id/clinic_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ABC Clinic"
@@ -36,20 +37,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp">
+        >
 
-        <TextView
-            android:id="@+id/signout"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/sign_out"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableRight="@drawable/ic_baseline_edit_24"
             android:text="signout"
+            android:backgroundTint="@color/beige"
             android:textAppearance="?attr/textAppearanceBody2"
             android:textColor="@color/cobalt"
             android:textStyle="bold"
-            android:layout_gravity="center"
-            android:drawableRight="@drawable/ic_baseline_edit_24"
+            android:paddingLeft="35dp"
+            style="?android:attr/borderlessButtonStyle"
             />
-
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView

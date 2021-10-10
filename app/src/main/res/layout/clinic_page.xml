@@ -78,7 +78,6 @@
                 <TextView
                     android:id="@+id/queue_text"
                     android:drawableRight="@drawable/queue_logo"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="right"
