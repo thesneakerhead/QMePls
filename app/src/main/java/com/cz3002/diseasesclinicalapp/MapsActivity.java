@@ -124,8 +124,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         centralizer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 13);
-                mMap.moveCamera(cameraUpdate);
+                getCurrLoc();
+                //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(curLoc, 13);
+                //mMap.moveCamera(cameraUpdate);
             }
         });
     }
