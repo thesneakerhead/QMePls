@@ -87,6 +87,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView clinicaddr;
     private TextView clinicnum;
     private TextView clinicopening;
+    private Button qButton1,qButton2,qButton3;
     SimpleDateFormat formatter = new SimpleDateFormat("HHmm");
     private static Marker clinicM1;
     private static Marker clinicM2;
@@ -172,6 +173,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LinearLayout card1 = findViewById(R.id.card1);
                 LinearLayout card2 = findViewById(R.id.card2);
                 LinearLayout card3 = findViewById(R.id.card3);
+                qButton1 = findViewById(R.id.qButton1);
+                qButton2 = findViewById(R.id.qButton2);
+                qButton3 = findViewById(R.id.qButton3);
                 card1.setOnClickListener(new View.OnClickListener()
                 {
                     @Override

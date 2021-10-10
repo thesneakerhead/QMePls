@@ -81,7 +81,7 @@ public class PatientPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    hndlr.joinQueue("a26df274-c10c-41a0-aec4-38d7d891d966",loggedInUser.getUid())
+                    hndlr.joinQueue("61d76b03-6c38-4556-8eb2-1d612f611f5a",loggedInUser.getUid())
                             .thenApply(s->{
                                 Log.e("the result", s);
                                 dbMngr.addToNameDictionary(loggedInUser.getUid(),curPatientUser.getName());
@@ -92,7 +92,7 @@ public class PatientPage extends AppCompatActivity {
                 }
             }
         });
-        listenForQueueChanges("a26df274-c10c-41a0-aec4-38d7d891d966",loggedInUser.getUid());
+        listenForQueueChanges("61d76b03-6c38-4556-8eb2-1d612f611f5a",loggedInUser.getUid());
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

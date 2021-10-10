@@ -185,12 +185,12 @@
                                 </LinearLayout>
 
                                 <Button
+                                    android:id="@+id/qButton1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Queue"
-                                    android:textColor="@color/white"
                                     android:layout_gravity="center"
-                                    />
+                                    android:text="Queue"
+                                    android:textColor="@color/white" />
 
                             </LinearLayout>
 
@@ -291,12 +291,12 @@
                                 </LinearLayout>
 
                                 <Button
+                                    android:id="@+id/qButton2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Queue"
-                                    android:textColor="@color/white"
                                     android:layout_gravity="center"
-                                    />
+                                    android:text="Queue"
+                                    android:textColor="@color/white" />
 
                             </LinearLayout>
                         </LinearLayout>
@@ -396,12 +396,12 @@
                                 </LinearLayout>
 
                                 <Button
+                                    android:id="@+id/qButton3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Queue"
-                                    android:textColor="@color/white"
                                     android:layout_gravity="center"
-                                    />
+                                    android:text="Queue"
+                                    android:textColor="@color/white" />
 
                             </LinearLayout>
                         </LinearLayout>
