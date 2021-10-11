@@ -206,13 +206,7 @@
 
 
 <!--    temporarily placed-->
-        <Button
-            android:id="@+id/join_queue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Join Queue"
-            android:textColor="@color/white"/>
-        <TextView
+    <TextView
             android:id="@+id/QueueText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

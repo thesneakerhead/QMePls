@@ -182,42 +182,43 @@ public class SymptomSearch extends AppCompatActivity {
     }
     public void buttonClickFunction(View view) throws PackageManager.NameNotFoundException {
         Intent intent = new Intent(SymptomSearch.this, MapsActivity.class);
+        intent.putExtra("symptoms",selectedListOfSymptoms);
         SymptomSearch.this.startActivity(intent);
-        FirebaseDatabaseManager dbMngr = new FirebaseDatabaseManager(SymptomSearch.this);
-        DatabaseReference dbRef = dbMngr.getDatabaseReference("app","Users",
-                FirebaseAuth.getInstance().getCurrentUser().getUid());
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getValue()!=null)
-                {
-                    PatientUser user = snapshot.getValue(PatientUser.class);
-                    SymptomCard symCard = new SymptomCard();
-                    Date c = Calendar.getInstance().getTime();
-                    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                    String formattedDate = df.format(c);
-                    symCard.setDate(formattedDate);
-                    symCard.setSymptoms(selectedListOfSymptoms);
-                    symCard.setClinicName("name placeholder");
-                    ArrayList<SymptomCard> symptomCards;
-                    if (user.getSymptomCards()!=null)
-                    {
-                        symptomCards = user.getSymptomCards();
-                    }
-                    else
-                    {
-                        symptomCards = new ArrayList<SymptomCard>();
-                    }
-                    symptomCards.add(symCard);
-                    user.setSymptomCards(symptomCards);
-                    dbRef.setValue(user);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        FirebaseDatabaseManager dbMngr = new FirebaseDatabaseManager(SymptomSearch.this);
+//        DatabaseReference dbRef = dbMngr.getDatabaseReference("app","Users",
+//                FirebaseAuth.getInstance().getCurrentUser().getUid());
+//        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.getValue()!=null)
+//                {
+//                    PatientUser user = snapshot.getValue(PatientUser.class);
+//                    SymptomCard symCard = new SymptomCard();
+//                    Date c = Calendar.getInstance().getTime();
+//                    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+//                    String formattedDate = df.format(c);
+//                    symCard.setDate(formattedDate);
+//                    symCard.setSymptoms(selectedListOfSymptoms);
+//                    symCard.setClinicName("name placeholder");
+//                    ArrayList<SymptomCard> symptomCards;
+//                    if (user.getSymptomCards()!=null)
+//                    {
+//                        symptomCards = user.getSymptomCards();
+//                    }
+//                    else
+//                    {
+//                        symptomCards = new ArrayList<SymptomCard>();
+//                    }
+//                    symptomCards.add(symCard);
+//                    user.setSymptomCards(symptomCards);
+//                    dbRef.setValue(user);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
     }
 }

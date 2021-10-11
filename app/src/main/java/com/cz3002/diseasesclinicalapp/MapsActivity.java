@@ -57,6 +57,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -68,6 +69,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.text.ParseException;
@@ -109,6 +111,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FirebaseUser loggedInUser;
     private PatientUser curPatientUser;
     private DatabaseReference userDbRef;
+    private ArrayList<String> selectedListOfSymptoms;
+    private TextView clinic1queueText,clinic2queueText,clinic3queueText;
 
     @SneakyThrows
     @Override
@@ -116,6 +120,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         checkMyPermission();
+        selectedListOfSymptoms = getIntent().getStringArrayListExtra("symptoms");
         dbMngr = new FirebaseDatabaseManager(MapsActivity.this);
         loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
         userDbRef = dbMngr.getDatabaseReference("app","Users",loggedInUser.getUid());
@@ -146,6 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });
+
 
 
 
@@ -305,6 +311,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        clinic1queueText = findViewById(R.id.clinicqueue1);
+        clinic2queueText = findViewById(R.id.clinicqueue2);
+        clinic3queueText = findViewById(R.id.clinicqueue3);
         // test nearest 3 clinics
         dbMngr.getAllClinicInfo()
                 .thenApply(dict->{
@@ -345,6 +354,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     String cnum;
                     String copening;
                     String cbutton;
+
                     clinicMarkers = new Marker[3];
                     cardno=0;
                     for (JSONObject b : nearest_clinic_data) {
@@ -363,12 +373,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             copening += "" + cardno + "";
                             cbutton +=""+cardno+"";
 
+
+
                             int cname_card = getResources().getIdentifier(cname, "id", getPackageName());
                             int caddr_card = getResources().getIdentifier(caddr, "id", getPackageName());
                             int cnum_card = getResources().getIdentifier(cnum, "id", getPackageName());
                             int copening_card = getResources().getIdentifier(copening, "id", getPackageName());
                             int cbutton_card = getResources().getIdentifier(cbutton, "id", getPackageName());
                             //Find View ID
+
+                            listenForQueueChanges(b.getString("uuid"),cardno);
+
+//                            switch (cardno)
+//                            {
+//                                case 1:
+//                                    clinic1queueText = findViewById(cqueue_card);
+//                                    listenForQueueChanges(b.getString("uuid"),clinic1queueText.getId());
+//                                    break;
+//                                case 2:
+//                                    clinic2queueText = findViewById(cqueue_card);
+//                                    listenForQueueChanges(b.getString("uuid"),clinic2queueText.getId());
+//                                    break;
+//                                case 3:
+//                                    clinic3queueText = findViewById(caddr_card);
+//                                    listenForQueueChanges(b.getString("uuid"),clinic3queueText.getId());
+//                                    break;
+//                            }
                             clinicname = findViewById(cname_card);
                             clinicaddr = findViewById(caddr_card);
                             clinicnum = findViewById(cnum_card);
@@ -451,7 +481,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+    public void listenForQueueChanges(String clinicUID, int cardNo)
+    {
+        dbMngr.clinicDatabase.getReference("clinicDictionary")
+                .child(clinicUID)
+                .child("clinicQueue")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.getValue()!=null){
+                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                            ArrayList<String> queue = snapshot.getValue(t);
+                            String queueString = String.valueOf(queue.size())+ " in Queue";
+                            if (cardNo==1)
+                            {
+                                clinic1queueText.setText(queueString);
+                            }
+                            if (cardNo==2)
+                            {
+                                clinic2queueText.setText(queueString);
+                            }
+                            if (cardNo==3)
+                            {
+                                clinic3queueText.setText(queueString);
+                            }
 
+
+                        }
+                        else{
+                            String queueString = "0 in Queue";
+                            if (cardNo==1)
+                            {
+                                clinic1queueText.setText(queueString);
+                            }
+                            if (cardNo==2)
+                            {
+                                clinic2queueText.setText(queueString);
+                            }
+                            if (cardNo==3)
+                            {
+                                clinic3queueText.setText(queueString);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
 
 
 }
