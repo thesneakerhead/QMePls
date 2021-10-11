@@ -73,6 +73,21 @@ public class FirebaseDatabaseManager {
         this.clinicDBApp=initApp;
         this.clinicDatabase = FirebaseDatabase.getInstance(initApp);
     }
+    public DatabaseReference getDatabaseReference(String dbName, String parentReference)
+    {
+        DatabaseReference dbRef = null;
+        if (dbName.equals("app"))
+        {
+            dbRef = this.appDatabase.getReference(parentReference);
+            return dbRef;
+        }
+        else if (dbName.equals("clinic"))
+        {
+            dbRef = this.clinicDatabase.getReference(parentReference);
+            return dbRef;
+        }
+        return dbRef;
+    }
 
     public DatabaseReference getDatabaseReference(String dbName, String parentReference,String childReference)
     {
@@ -160,6 +175,28 @@ public class FirebaseDatabaseManager {
                 }
 
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return future;
+    }
+    public CompletableFuture<HashMap<String,ClinicInfo>> getAllClinicInfo()
+    {
+        final CompletableFuture<HashMap<String,ClinicInfo>> future = new CompletableFuture<HashMap<String,ClinicInfo>>();
+        DatabaseReference dbRef = getDatabaseReference("clinic","clinicDictionary");
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue()!=null)
+                {
+                    GenericTypeIndicator<HashMap<String,ClinicInfo>> t = new GenericTypeIndicator<HashMap<String, ClinicInfo>>() {};
+                    HashMap<String,ClinicInfo> tempDict = snapshot.getValue(t);
+                    future.complete(tempDict);
+                }
             }
 
             @Override

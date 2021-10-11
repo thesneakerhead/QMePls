@@ -52,6 +52,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -69,9 +75,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import kotlin.Metadata;
 import kotlin.jvm.internal.Intrinsics;
+import lombok.SneakyThrows;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -87,7 +96,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView clinicaddr;
     private TextView clinicnum;
     private TextView clinicopening;
-    private Button qButton1,qButton2,qButton3;
+    private Button qButton;
     SimpleDateFormat formatter = new SimpleDateFormat("HHmm");
     private static Marker clinicM1;
     private static Marker clinicM2;
@@ -95,17 +104,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ImageView bottomNav;
     private ScrollView bottombar;
     private static boolean minimized;
+    private FirebaseDatabaseManager dbMngr;
+    private MapsManager mapsManager;
+    private FirebaseUser loggedInUser;
+    private PatientUser curPatientUser;
+    private DatabaseReference userDbRef;
 
-
-    MapsManager mapsManager = new MapsManager(this);
-
-
+    @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         checkMyPermission();
+        dbMngr = new FirebaseDatabaseManager(MapsActivity.this);
+        loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
+        userDbRef = dbMngr.getDatabaseReference("app","Users",loggedInUser.getUid());
+        userDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue()!=null)
+                {
+                    curPatientUser = snapshot.getValue(PatientUser.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         mLocationClient = new FusedLocationProviderClient(this);
+        mapsManager = new MapsManager(this,MapsActivity.this);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -174,9 +203,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LinearLayout card1 = findViewById(R.id.card1);
                 LinearLayout card2 = findViewById(R.id.card2);
                 LinearLayout card3 = findViewById(R.id.card3);
-                qButton1 = findViewById(R.id.qButton1);
-                qButton2 = findViewById(R.id.qButton2);
-                qButton3 = findViewById(R.id.qButton3);
                 card1.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
@@ -279,69 +305,120 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        int cardno;
-        String cname;
-        String caddr;
-        String cnum;
-        String copening;
-        clinicMarkers = new Marker[3];
         // test nearest 3 clinics
-        try {
-            ArrayList<JSONObject> nearest_clinic_data = mapsManager.getNearestClinics();
-            cardno=0;
-            for (JSONObject b : nearest_clinic_data) {
-                cname="clinicname";
-                caddr= "clinicaddr";
-                cnum= "clinicnum";
-                copening = "clinicopening";
+        dbMngr.getAllClinicInfo()
+                .thenApply(dict->{
+                    ArrayList<JSONObject> nearest_clinic_data = new ArrayList<JSONObject>();
+                    for (Map.Entry<String,ClinicInfo> entry:dict.entrySet())
+                    {try{
 
-                try {
-                    //iterate each card number
-                    cardno++;
-                    cname += "" + cardno + "";
-                    caddr += "" + cardno + "";
-                    cnum += "" + cardno + "";
-                    copening += "" + cardno + "";
+                        JSONObject clinic = new JSONObject();
+                        String uuid = entry.getKey();
+                        ClinicInfo clinicInfo = entry.getValue();
+                        clinic.put("name", clinicInfo.getClinicName());
+                        clinic.put("lati", clinicInfo.getLat());
+                        clinic.put("longi", clinicInfo.getLng());
+                        clinic.put("openingHour", clinicInfo.getOpeningHour());
+                        clinic.put("closingHour", clinicInfo.getClosingHour());
+                        clinic.put("address", clinicInfo.getAddress());
+                        //clinic.put("postalCode", clinicPostal);
+                        clinic.put("tel", clinicInfo.getTelNo());
+                        clinic.put("uuid",uuid);
+                        Log.d("uuid", uuid);
+                        nearest_clinic_data.add(clinic);}
+                        catch (Exception e)
+                        {
 
-                    //get the View ID
-                    int  cname_card = getResources().getIdentifier(cname, "id", getPackageName());
-                    int  caddr_card = getResources().getIdentifier(caddr, "id", getPackageName());
-                    int  cnum_card = getResources().getIdentifier(cnum, "id", getPackageName());
-                    int  copening_card = getResources().getIdentifier(copening, "id", getPackageName());
-                    //Find View ID
-                    clinicname = findViewById(cname_card);
-                    clinicaddr = findViewById(caddr_card);
-                    clinicnum = findViewById(cnum_card);
-                    clinicopening = findViewById(copening_card);
+                        }
+                    }
+                    try {
+                        nearest_clinic_data = mapsManager.getNearestClinics(nearest_clinic_data);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("hi",nearest_clinic_data.toString());
+                    int cardno;
+                    String cname;
+                    String caddr;
+                    String cnum;
+                    String copening;
+                    String cbutton;
+                    clinicMarkers = new Marker[3];
+                    cardno=0;
+                    for (JSONObject b : nearest_clinic_data) {
+                        cname = "clinicname";
+                        caddr = "clinicaddr";
+                        cnum = "clinicnum";
+                        copening = "clinicopening";
+                        cbutton = "clinicbutton";
 
-                    //Printing of info
-                    String clinic_name = b.getString("name");
-                    clinicname.setText(clinic_name);
-                    Double clinic_lat = b.getDouble("lati");
-                    Double clinic_long = b.getDouble("longi");
-                    String clinic_addr = b.getString("address");
-                    clinicaddr.setText(clinic_addr);
-                    String clinic_num = b.getString("tel");
-                    clinicnum.setText("Tel: "+clinic_num);
+                        try {
+                            //iterate each card number
+                            cardno++;
+                            cname += "" + cardno + "";
+                            caddr += "" + cardno + "";
+                            cnum += "" + cardno + "";
+                            copening += "" + cardno + "";
+                            cbutton +=""+cardno+"";
+
+                            int cname_card = getResources().getIdentifier(cname, "id", getPackageName());
+                            int caddr_card = getResources().getIdentifier(caddr, "id", getPackageName());
+                            int cnum_card = getResources().getIdentifier(cnum, "id", getPackageName());
+                            int copening_card = getResources().getIdentifier(copening, "id", getPackageName());
+                            int cbutton_card = getResources().getIdentifier(cbutton, "id", getPackageName());
+                            //Find View ID
+                            clinicname = findViewById(cname_card);
+                            clinicaddr = findViewById(caddr_card);
+                            clinicnum = findViewById(cnum_card);
+                            clinicopening = findViewById(copening_card);
+                            qButton = findViewById(cbutton_card);
+                            qButton.setTag(b.getString("uuid"));
+                            qButton.setOnClickListener(new View.OnClickListener() {
+                                @SneakyThrows
+                                @Override
+                                public void onClick(View v) {
+                                    String clinicUUID = (String)v.getTag();
+                                    HttpRequestHandler hndlr = new HttpRequestHandler();
+                                    hndlr.joinQueue(clinicUUID,loggedInUser.getUid())
+                                            .thenApply(s->{
+                                                Log.e("the result", s);
+                                                dbMngr.addToNameDictionary(loggedInUser.getUid(),curPatientUser.getName());
+                                                return null;
+                                            });
+                                }
+                            });
+                            //Printing of info
+                            String clinic_name = b.getString("name");
+                            clinicname.setText(clinic_name);
+                            Double clinic_lat = b.getDouble("lati");
+                            Double clinic_long = b.getDouble("longi");
+                            String clinic_addr = b.getString("address");
+                            clinicaddr.setText(clinic_addr);
+                            String clinic_num = b.getString("tel");
+                            clinicnum.setText("Tel: " + clinic_num);
 
 
-                    String clinic_open = b.getString("openingHour");
-                    String clinic_close = b.getString("closingHour");
-                    clinicopening.setText(clinic_open+ "H - "+clinic_close+"H");
+                            String clinic_open = b.getString("openingHour");
+                            String clinic_close = b.getString("closingHour");
+                            clinicopening.setText(clinic_open + "H - " + clinic_close + "H");
 
-                    LatLng clinicPos = new LatLng(clinic_lat,clinic_long);
-                    clinicMarkers[cardno-1] = mMap.addMarker(new MarkerOptions().position(clinicPos).title(clinic_name)
-                            .icon(mapsManager.bitmapDescriptorFromVector(MapsActivity.this, R.drawable.ic_clinicmarker)));
+                            LatLng clinicPos = new LatLng(clinic_lat, clinic_long);
+                            clinicMarkers[cardno - 1] = mMap.addMarker(new MarkerOptions().position(clinicPos).title(clinic_name)
+                                    .icon(mapsManager.bitmapDescriptorFromVector(MapsActivity.this, R.drawable.ic_clinicmarker)));
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                //} catch (ParseException e) {
-                    //e.printStackTrace();
-                }
-            }
-        } catch (JSONException | ParseException e) {
-            e.printStackTrace();
-        }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            //} catch (ParseException e) {
+                            //e.printStackTrace();
+                        }
+                    }
+                return null;});
+
+
+        //get the View ID
+
     }
 
     @Override

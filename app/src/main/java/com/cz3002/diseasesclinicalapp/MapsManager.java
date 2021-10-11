@@ -1,10 +1,12 @@
 package com.cz3002.diseasesclinicalapp;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.util.Log;
 
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
@@ -23,13 +25,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+import lombok.SneakyThrows;
 
 public class MapsManager {
 
     private Context MapsManagerContext;
     Date clinicOpen, clinicClose;
-    public MapsManager(Context context) {
-        this.MapsManagerContext = context;
+    private FirebaseDatabaseManager dbMngr;
+    @SneakyThrows
+    public MapsManager(Context applicationContext, Context activityContext){
+        this.MapsManagerContext = applicationContext;
+        this.dbMngr = new FirebaseDatabaseManager(activityContext);
     }
 
     BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorResId) {
@@ -41,26 +52,27 @@ public class MapsManager {
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
-    String[] getClinicNames() {
-        //MapsManagerContext clinicLogic = new clinicLogic(MapsManagerContext);
-        String[] allNames = new String[5];
-        int i = 0;
-        ArrayList<JSONObject> all_clinic_data = getClinics();
-        try {
-
-            for (JSONObject c : all_clinic_data) {
-                String clinicName = c.getString("name");
-
-                allNames[i] = clinicName;
-                i++;
-
-            }
-            return allNames;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return allNames;
-    }
+//    String[] getClinicNames() {
+//        //MapsManagerContext clinicLogic = new clinicLogic(MapsManagerContext);
+//        String[] allNames = new String[5];
+//        int i = 0;
+//        ArrayList<JSONObject> all_clinic_data = getClinics();
+//
+//        try {
+//
+//            for (JSONObject c : all_clinic_data) {
+//                String clinicName = c.getString("name");
+//
+//                allNames[i] = clinicName;
+//                i++;
+//
+//            }
+//            return allNames;
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        return allNames;
+//    }
 
     public double calculateDist(double x, double y) {
         Location markerLoc = new Location("Marker");
@@ -76,56 +88,81 @@ public class MapsManager {
         return distance;
     }
 
-    ArrayList<JSONObject> getClinics() {
-        ArrayList<JSONObject> allClinics = new ArrayList<JSONObject>();
-        try {
-            GeoJsonLayer clinicLayer = new GeoJsonLayer(MapsActivity.mMap, R.raw.clinics_geo, MapsManagerContext);
-
-            for (GeoJsonFeature feature : clinicLayer.getFeatures()) {
-                JSONObject clinic = new JSONObject();
-                String clinicName = feature.getProperty("name");
-                String clinicLatStr = feature.getProperty("lat");
-                String clinicLngStr = feature.getProperty("long");
-                double clinicLat = Double.parseDouble(clinicLatStr);
-                double clinicLong = Double.parseDouble(clinicLngStr);
-                String strClinicOpen = feature.getProperty("openingHour");
-                String strClinicClose = feature.getProperty("closingHour");
-                String clinicAddr = feature.getProperty("address");
-                //String clinicPostal = feature.getProperty("postalCode");
-                String clinicNum = feature.getProperty("tel");
-
-
-//                System.out.println("=======================Open: " + strClinicOpen);
-//                System.out.println("=======================Close: " + strClinicClose);
-
-
-                clinic.put("name", clinicName);
-                clinic.put("lati", clinicLat);
-                clinic.put("longi", clinicLong);
-                clinic.put("openingHour", strClinicOpen);
-                clinic.put("closingHour", strClinicClose);
-                clinic.put("address", clinicAddr);
-                //clinic.put("postalCode", clinicPostal);
-                clinic.put("tel", clinicNum);
+//    @SneakyThrows
+//    ArrayList<JSONObject> getClinics() {
+//        ArrayList<JSONObject> allClinics = new ArrayList<JSONObject>();
+//        CompletableFuture<HashMap<String,ClinicInfo>> getClinicInfoResult =  dbMngr.getAllClinicInfo();
+//        while(!getClinicInfoResult.isDone())
+//        {
+//            Log.d("loading clinic Info", "loading");
+//        }
+//        HashMap<String,ClinicInfo> clinicInfos = getClinicInfoResult.get();
+//        for (Map.Entry<String,ClinicInfo> entry:clinicInfos.entrySet())
+//        {
+//            JSONObject clinic = new JSONObject();
+//            String uuid = entry.getKey();
+//            ClinicInfo clinicInfo = entry.getValue();
+//            clinic.put("name", clinicInfo.getClinicName());
+//            clinic.put("lati", clinicInfo.getLat());
+//            clinic.put("longi", clinicInfo.getLng());
+//            clinic.put("openingHour", clinicInfo.getOpeningHour());
+//            clinic.put("closingHour", clinicInfo.getClosingHour());
+//            clinic.put("address", clinicInfo.getAddress());
+//                //clinic.put("postalCode", clinicPostal);
+//            clinic.put("tel", clinicInfo.getTelNo());
+//            clinic.put("uuid",uuid);
+//            Log.d("uuid", uuid);
+//            allClinics.add(clinic);
+//        }
+//        return allClinics;
 
 
-                allClinics.add(clinic);
-            }
-            return allClinics;
+//        try {
+//            GeoJsonLayer clinicLayer = new GeoJsonLayer(MapsActivity.mMap, R.raw.clinics_geo, MapsManagerContext);
+//
+//            for (GeoJsonFeature feature : clinicLayer.getFeatures()) {
+//                JSONObject clinic = new JSONObject();
+//                String clinicName = feature.getProperty("name");
+//                String clinicLatStr = feature.getProperty("lat");
+//                String clinicLngStr = feature.getProperty("long");
+//                double clinicLat = Double.parseDouble(clinicLatStr);
+//                double clinicLong = Double.parseDouble(clinicLngStr);
+//                String strClinicOpen = feature.getProperty("openingHour");
+//                String strClinicClose = feature.getProperty("closingHour");
+//                String clinicAddr = feature.getProperty("address");
+//                //String clinicPostal = feature.getProperty("postalCode");
+//                String clinicNum = feature.getProperty("tel");
+//
+//
+//////                System.out.println("=======================Open: " + strClinicOpen);
+//////                System.out.println("=======================Close: " + strClinicClose);
+////
+////
+//                clinic.put("name", clinicName);
+//                clinic.put("lati", clinicLat);
+//                clinic.put("longi", clinicLong);
+//                clinic.put("openingHour", strClinicOpen);
+//                clinic.put("closingHour", strClinicClose);
+//                clinic.put("address", clinicAddr);
+//                //clinic.put("postalCode", clinicPostal);
+//                clinic.put("tel", clinicNum);
+//
+//                allClinics.add(clinic);
+//            }
+//            return allClinics;
+//
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return allClinics;
+//    }
 
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return allClinics;
-    }
-
-
-    ArrayList<JSONObject> getNearestClinics() throws JSONException, ParseException {
+    ArrayList<JSONObject> getNearestClinics(ArrayList<JSONObject> allClinics) throws JSONException, ParseException {
         ArrayList<JSONObject> nearestClinics = new ArrayList<JSONObject>();
-        ArrayList<JSONObject> allClinics = getClinics();
         int noClinics = allClinics.size();
         int indexno=0;
 
