@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ import lombok.SneakyThrows;
 
 public class ClinicPage extends AppCompatActivity {
     private Button nextPatientButton;
+    private ImageView swapBtn;
     private Button walkInPatient;
     private TextView signoutButton;
     private TextView queueText;
@@ -50,7 +52,7 @@ public class ClinicPage extends AppCompatActivity {
     public ArrayList<String> names;
     public ArrayList<String> index;
     private EditText walkInName;
-    private Button confirm, cancel;
+    private Button next_confirm, next_cancel, confirm, cancel, swap_confirm, swap_cancel;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
     private HttpRequestHandler hndlr;
@@ -75,6 +77,8 @@ public class ClinicPage extends AppCompatActivity {
         index = new ArrayList<>();
         walkInPatient = findViewById(R.id.add_walkin);
         clinic_Name = findViewById(R.id.clinic_name);
+        dialogBuilder = new AlertDialog.Builder(this);
+
 
 
 
@@ -126,6 +130,13 @@ public class ClinicPage extends AppCompatActivity {
             }
         });
 
+//        swapBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                swapPatient();
+//            }
+//        });
+
 
     }
     public void listenForQueueChanges(String clinicUID)
@@ -140,7 +151,6 @@ public class ClinicPage extends AppCompatActivity {
                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                             ArrayList<String> queue = snapshot.getValue(t);
                             //set display text to number of people in the queue
-                            //queueText.setText(String.valueOf(queue.size()));
                             dbMngr.getNameDictionary()
                                     .thenApply(nameDict -> {
                                         ArrayList<String> patientsNames = new ArrayList<String>();
@@ -216,8 +226,40 @@ public class ClinicPage extends AppCompatActivity {
                     }
                 });
     }
-    public void addWalkinPatient(){
+
+    public void nextPatient(){
         dialogBuilder = new AlertDialog.Builder(this);
+        final View nextPopUpView = getLayoutInflater().inflate(R.layout.next_popup,null);
+        next_confirm = nextPopUpView.findViewById(R.id.next_confirm);
+        next_cancel = nextPopUpView.findViewById(R.id.next_cancel);
+        dialogBuilder.setView(nextPopUpView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+        next_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        next_confirm.setOnClickListener(new View.OnClickListener() {
+            @SneakyThrows
+            @Override
+            public void onClick(View v) {
+                // try {
+                //                                hndlr.deQueue(clinicUID)
+                //                                        .thenApply(s->{
+                //                                            Log.e("the result", s);
+                //                                            return null;
+                //                                        });
+                //                            } catch (JsonProcessingException e) {
+                //                                e.printStackTrace();
+                //                            }
+                //                        }
+            }
+        });
+    }
+    public void addWalkinPatient(){
+//        dialogBuilder = new AlertDialog.Builder(this);
         final View walkinPopUpView = getLayoutInflater().inflate(R.layout.walkin_popup,null);
         walkInName = walkinPopUpView.findViewById(R.id.walkin_name);
         confirm = walkinPopUpView.findViewById(R.id.confirm);
@@ -246,6 +288,29 @@ public class ClinicPage extends AppCompatActivity {
                     Toast.makeText(ClinicPage.this,"Please Enter a Valid Name",Toast.LENGTH_LONG).show();
                     dialog.dismiss();
                 }
+            }
+        });
+    }
+
+    public void swapPatient(){
+
+        final View swapPopUpView = getLayoutInflater().inflate(R.layout.swap_popup,null);
+        swap_confirm = swapPopUpView.findViewById(R.id.swap_confirm);
+        swap_cancel = swapPopUpView.findViewById(R.id.swap_cancel);
+        dialogBuilder.setView(swapPopUpView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+        swap_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        swap_confirm.setOnClickListener(new View.OnClickListener() {
+            @SneakyThrows
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
     }

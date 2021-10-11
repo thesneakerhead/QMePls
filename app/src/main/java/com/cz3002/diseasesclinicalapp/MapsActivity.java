@@ -177,6 +177,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .findFragmentById(R.id.map);
 
                 minimized=true;
+                disableScroll();
                 bottomNav = findViewById(R.id.minimize);
                 bottomNav.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -186,17 +187,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             System.out.println("true");
                             bottombar = findViewById(R.id.bottombar);
                             ViewGroup.LayoutParams bottombar2 = bottombar.getLayoutParams();
-                            bottombar2.height = 300;
+                            bottombar2.height = 1700;
                             bottombar.setLayoutParams(bottombar2);
                             minimized=false;
+                            enableScroll();
                         }
                         else {
                             System.out.println("false");
                             bottombar = findViewById(R.id.bottombar);
                             ViewGroup.LayoutParams bottombar2 = bottombar.getLayoutParams();
-                            bottombar2.height = 1700;
+                            bottombar2.height = 300;
                             bottombar.setLayoutParams(bottombar2);
                             minimized=true;
+                            disableScroll();
                         }
 
 
@@ -531,6 +534,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
     }
-
+    public void disableScroll(){
+        ScrollView scrollView = findViewById(R.id.bottombar);
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+    }
+    public void enableScroll(){
+        ScrollView scrollView = findViewById(R.id.bottombar);
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+    }
 
 }

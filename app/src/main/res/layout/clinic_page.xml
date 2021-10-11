@@ -145,8 +145,10 @@
                     android:text="Index 1"
                     android:textColor="@color/cobalt"
                     android:textSize="14sp" />
+
             </TableRow>
         </TableLayout>
+
     </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
@@ -158,10 +160,9 @@
 
         <Button
             android:id="@+id/dequeue_button"
-            android:layout_width="wrap_content"
+            android:layout_width="165dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:background="@drawable/roundedbutton"
             android:text="Next Patient"
             android:textColor="@color/white" />
 
@@ -172,14 +173,17 @@
 
         <Button
             android:id="@+id/add_walkin"
-            android:layout_width="wrap_content"
+            android:layout_width="165dp"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginRight="30dp"
-            android:background="@drawable/roundedbutton"
             android:drawableLeft="@drawable/walkin_logo"
             android:text="Add Walk In"
             android:textColor="@color/white" />
+
+
+
     </LinearLayout>
+
 
 </RelativeLayout>

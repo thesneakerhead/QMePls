@@ -30,7 +30,7 @@
     <ScrollView
         android:id="@+id/bottombar"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="120dp"
         android:background="@drawable/map_bottom_sheet_shape"
         app:layout_constraintBottom_toBottomOf="parent"
 
@@ -41,7 +41,7 @@
         <FrameLayout
             android:id="@+id/sheet"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="50dp"
             tools:ignore="MissingConstraints"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
             android:scrollbars="vertical">
@@ -186,7 +186,7 @@
                                 </LinearLayout>
 
                                 <Button
-                                    android:id="@+id/clinicbutton1"
+                                    android:id="@+id/clinicButton1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
@@ -293,7 +293,7 @@
                                 </LinearLayout>
 
                                 <Button
-                                    android:id="@+id/clinicbutton2"
+                                    android:id="@+id/clinicButton2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
@@ -399,7 +399,7 @@
                                 </LinearLayout>
 
                                 <Button
-                                    android:id="@+id/clinicbutton3"
+                                    android:id="@+id/clinicButton3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
