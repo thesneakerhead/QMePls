@@ -44,6 +44,7 @@ public class PatientPage extends AppCompatActivity {
     private TextView nameText;
     private DatabaseReference userDbRef;
     private PatientUser curPatientUser;
+    private OngoingSymptomCard ongoingCard;
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,27 @@ public class PatientPage extends AppCompatActivity {
 
             }
         });
+        userDbRef.child("ongoingCard").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue()!=null)
+                {
+                    ongoingCard = snapshot.getValue(OngoingSymptomCard.class);
+                    displayOngoingCard();
+                    fab.setEnabled(false);
+                }
+                else{
+                    ongoingCard = null;
+                    fab.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                ongoingCard = null;
+                fab.setEnabled(true);
+            }
+        });
 
         listenForQueueChanges("61d76b03-6c38-4556-8eb2-1d612f611f5a",loggedInUser.getUid());
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -98,9 +120,13 @@ public class PatientPage extends AppCompatActivity {
 
     }
 
+    private void displayOngoingCard() {
+
+    }
+
     private void displaySymptomCards() {
         ArrayList<SymptomCard> symptomCards = curPatientUser.getSymptomCards();
-        OngoingSymptomCard ongoingCard = curPatientUser.getOngoingCard(); // this is null if the patient is not queuing for anything
+
     }
 
     public void listenForQueueChanges(String clinicUID,String patientUID)

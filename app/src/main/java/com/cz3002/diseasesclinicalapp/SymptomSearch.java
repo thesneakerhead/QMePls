@@ -181,9 +181,14 @@ public class SymptomSearch extends AppCompatActivity {
         });
     }
     public void buttonClickFunction(View view) throws PackageManager.NameNotFoundException {
-        Intent intent = new Intent(SymptomSearch.this, MapsActivity.class);
-        intent.putExtra("symptoms",selectedListOfSymptoms);
-        SymptomSearch.this.startActivity(intent);
+        try {
+            selectedListOfSymptoms.get(0);
+            Intent intent = new Intent(SymptomSearch.this, MapsActivity.class);
+            intent.putExtra("symptoms",selectedListOfSymptoms);
+            SymptomSearch.this.startActivity(intent);
+        }catch (Exception e){
+            Toast.makeText(SymptomSearch.this,"You must add at least one symptom",Toast.LENGTH_LONG);
+        }
 //        FirebaseDatabaseManager dbMngr = new FirebaseDatabaseManager(SymptomSearch.this);
 //        DatabaseReference dbRef = dbMngr.getDatabaseReference("app","Users",
 //                FirebaseAuth.getInstance().getCurrentUser().getUid());

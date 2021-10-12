@@ -77,6 +77,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -365,7 +366,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         caddr = "clinicaddr";
                         cnum = "clinicnum";
                         copening = "clinicopening";
-                        cbutton = "clinicbutton";
+                        cbutton = "clinicButton";
 
                         try {
                             //iterate each card number
@@ -404,19 +405,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             clinicnum = findViewById(cnum_card);
                             clinicopening = findViewById(copening_card);
                             qButton = findViewById(cbutton_card);
-                            qButton.setTag(b.getString("uuid"));
+                            //ArrayList<String> clinicTags = new ArrayList<String>();
+                            String tagString = b.getString("uuid")+","+b.getString("name");
+                            qButton.setTag(tagString);
                             qButton.setOnClickListener(new View.OnClickListener() {
                                 @SneakyThrows
                                 @Override
                                 public void onClick(View v) {
-                                    String clinicUUID = (String)v.getTag();
+
+                                    String tagString = (String)v.getTag();
+                                    String[] tags = tagString.split(",");
+                                    String clinicUUID = tags[0];
+                                    String clinicName = tags[1];
+
                                     HttpRequestHandler hndlr = new HttpRequestHandler();
                                     hndlr.joinQueue(clinicUUID,loggedInUser.getUid())
                                             .thenApply(s->{
-                                                Log.e("the result", s);
                                                 dbMngr.addToNameDictionary(loggedInUser.getUid(),curPatientUser.getName());
+                                                OngoingSymptomCard ongoingCard = new OngoingSymptomCard();
+                                                ongoingCard.setClinicUID(clinicUUID);
+                                                ongoingCard.setSymptoms(selectedListOfSymptoms);
+                                                ongoingCard.setClinicName(clinicName);
+                                                Date c = Calendar.getInstance().getTime();
+                                                SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                                                String formattedDate = df.format(c);
+                                                ongoingCard.setDate(formattedDate);
+                                                ongoingCard.setStatus("Ongoing");
+                                                curPatientUser.setOngoingCard(ongoingCard);
+                                                dbMngr.getDatabaseReference("app","Users",loggedInUser.getUid())
+                                                        .setValue(curPatientUser);
+                                                Intent intent = new Intent(MapsActivity.this,PatientPage.class);
+                                                startActivity(intent);
                                                 return null;
                                             });
+
                                 }
                             });
                             //Printing of info
@@ -483,6 +505,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     public void listenForQueueChanges(String clinicUID, int cardNo)
     {
+        Log.d("test","test");
         dbMngr.clinicDatabase.getReference("clinicDictionary")
                 .child(clinicUID)
                 .child("clinicQueue")
