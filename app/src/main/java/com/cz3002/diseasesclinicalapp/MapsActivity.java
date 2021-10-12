@@ -372,9 +372,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             cnum += "" + cardno + "";
                             copening += "" + cardno + "";
                             cbutton +=""+cardno+"";
-
-
-
                             int cname_card = getResources().getIdentifier(cname, "id", getPackageName());
                             int caddr_card = getResources().getIdentifier(caddr, "id", getPackageName());
                             int cnum_card = getResources().getIdentifier(cnum, "id", getPackageName());
