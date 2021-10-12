@@ -86,6 +86,13 @@ public class PatientPage extends AppCompatActivity {
                     ongoingCard = snapshot.getValue(OngoingSymptomCard.class);
                     displayOngoingCard();
                     fab.setEnabled(false);
+                    listenForQueueChanges(ongoingCard.getClinicUID(),loggedInUser.getUid());
+                    logoutButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            signOut();
+                        }
+                    });
                 }
                 else{
                     ongoingCard = null;
@@ -100,13 +107,7 @@ public class PatientPage extends AppCompatActivity {
             }
         });
 
-        listenForQueueChanges("61d76b03-6c38-4556-8eb2-1d612f611f5a",loggedInUser.getUid());
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOut();
-            }
-        });
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,8 +143,34 @@ public class PatientPage extends AppCompatActivity {
                     Integer queuePos = queue.indexOf(patientUID);
                         if (queuePos < 0)
                         {
-                            queuePosText.setText("you are no longer in the queue!");
+                            dbMngr.getDatabaseReference("clinic","clinicDictionary",clinicUID
+                                    ,"lastCancelledPatient")
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if(snapshot.getValue()!=null)
+                                            {
+                                                GenericTypeIndicator<String> t = new GenericTypeIndicator<String>() {};
+                                                String lastCancelledPatient = snapshot.getValue(t);
+                                                if(lastCancelledPatient.equals(loggedInUser.getUid()))
+                                                {
+                                                    queuePosText.setText("you've been removed from the queue!");
+                                                }
+                                                else{
+                                                    queuePosText.setText("your appointment has been completed");
+                                                }
 
+                                            }
+                                            else{
+                                                queuePosText.setText("your appointment has been completed");
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            queuePosText.setText("your appointment has been completed");
+                                        }
+                                    });
                         }
                         else if (queuePos.equals(1))
                         {
@@ -160,7 +187,34 @@ public class PatientPage extends AppCompatActivity {
                         }
                 }
                 else{
-                    queuePosText.setText("you are no longer in the queue!");
+                    dbMngr.getDatabaseReference("clinic","clinicDictionary",clinicUID
+                            ,"lastCancelledPatient")
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.getValue()!=null)
+                                    {
+                                        GenericTypeIndicator<String> t = new GenericTypeIndicator<String>() {};
+                                        String lastCancelledPatient = snapshot.getValue(t);
+                                        if(lastCancelledPatient.equals(loggedInUser.getUid()))
+                                        {
+                                            queuePosText.setText("you've been removed from the queue!");
+                                        }
+                                        else{
+                                            queuePosText.setText("your appointment has been completed");
+                                        }
+
+                                    }
+                                    else{
+                                        queuePosText.setText("your appointment has been completed");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    queuePosText.setText("your appointment has been completed");
+                                }
+                            });
                 }
             }
 

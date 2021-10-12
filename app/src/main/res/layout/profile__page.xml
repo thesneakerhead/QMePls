@@ -19,7 +19,7 @@
             android:layout_marginBottom="10dp"
             android:background="@color/beige"
             android:orientation="vertical"
-            tools:context=".SymptomSearch">
+            >
 
             <TextView
                 android:id="@+id/nameText"
@@ -63,6 +63,14 @@
                     />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/QueueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="# ppl infront"
+                android:layout_marginHorizontal="160dp"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:textColor="@color/cobalt" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -191,6 +199,8 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+
+
         </LinearLayout>
     </ScrollView>
 
@@ -206,17 +216,7 @@
 
 
 <!--    temporarily placed-->
-    <TextView
-            android:id="@+id/QueueText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="# ppl infront"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:textColor="@color/cobalt"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="10dp"/>
 
 
-
-    </FrameLayout>
+</FrameLayout>
 

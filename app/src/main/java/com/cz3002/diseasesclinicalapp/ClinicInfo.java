@@ -24,4 +24,5 @@ public class ClinicInfo {
     public String address;
     public String openingHour;
     public String closingHour;
+    public String lastCancelledPatient;
 }
