@@ -2,6 +2,7 @@ package com.cz3002.diseasesclinicalapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.databinding.ObservableList;
 
 import android.content.Intent;
@@ -10,12 +11,15 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -45,11 +49,13 @@ public class PatientPage extends AppCompatActivity {
     private DatabaseReference userDbRef;
     private PatientUser curPatientUser;
     private OngoingSymptomCard ongoingCard;
+    private FrameLayout myLayout;
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbMngr = new FirebaseDatabaseManager(PatientPage.this);
+
         setContentView(R.layout.profile__page);
         initPatientPage();
         HttpRequestHandler hndlr = new HttpRequestHandler();
@@ -60,6 +66,9 @@ public class PatientPage extends AppCompatActivity {
         nameText = findViewById(R.id.nameText);
         firebaseAuth = FirebaseAuth.getInstance();
         loggedInUser = firebaseAuth.getCurrentUser();
+
+
+
         // Button to join queue
         userDbRef = dbMngr.getDatabaseReference("app","Users",loggedInUser.getUid());
         userDbRef.addListenerForSingleValueEvent(new ValueEventListener() {

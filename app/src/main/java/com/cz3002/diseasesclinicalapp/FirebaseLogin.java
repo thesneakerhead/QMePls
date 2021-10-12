@@ -72,8 +72,7 @@ public class FirebaseLogin extends AppCompatActivity {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user!=null)
         {
-            Intent i = new Intent(FirebaseLogin.this,PatientPage.class);
-            startActivity(i);
+           reconnectAndNavigate(user.getUid());
         }
         setContentView(R.layout.firebaselogin);
         List<String> options = List.of("Patient","Clinic");
@@ -132,6 +131,34 @@ public class FirebaseLogin extends AppCompatActivity {
         }
     }
 
+    private void reconnectAndNavigate(String uid)
+    {
+        DatabaseReference dbRef = dbMngr.appDatabase.getReference("Users").child(uid);
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue()!=null)
+                {
+                    Intent i;
+                    GenericTypeIndicator<User> t = new GenericTypeIndicator<User>(){};
+                    loggedInUser = snapshot.getValue(t);
+                    if(loggedInUser.isClinicAcc)
+                    {
+                        i = new Intent(FirebaseLogin.this,ClinicPage.class);
+                    }
+                    else {
+                        i = new Intent(FirebaseLogin.this,PatientPage.class);
+                    }
+                    startActivity(i);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     private void navigateBasedOnAccount(String uid, String providerId) {
 
         DatabaseReference dbRef = dbMngr.appDatabase.getReference("Users").child(uid);
@@ -144,12 +171,12 @@ public class FirebaseLogin extends AppCompatActivity {
                     GenericTypeIndicator<User> t = new GenericTypeIndicator<User>(){};
                     GenericTypeIndicator<PatientUser> p = new GenericTypeIndicator<PatientUser>(){};
                     loggedInUser = snapshot.getValue(t);
-                    if(loggedInUser.isClinicAcc==true && selection.equals("Clinic"))
+                    if(loggedInUser.isClinicAcc && selection.equals("Clinic"))
                     {
                         Intent i = new Intent(FirebaseLogin.this,ClinicPage.class);
                         startActivity(i);
                     }
-                    else if(loggedInUser.isClinicAcc==false && selection.equals("Patient"))
+                    else if(!loggedInUser.isClinicAcc && selection.equals("Patient"))
                     {
                         PatientUser user = snapshot.getValue(p);
                         Intent i;
