@@ -105,6 +105,7 @@ public class PatientPage extends AppCompatActivity {
 
     public void listenForQueueChanges(String clinicUID,String patientUID)
     {
+        NotificationManager sendNoti = new NotificationManager(this);
         DatabaseReference dbRef = dbMngr.getDatabaseReference("clinic","clinicDictionary",clinicUID,"clinicQueue");
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -118,6 +119,11 @@ public class PatientPage extends AppCompatActivity {
                             queuePosText.setText("you are no longer in the queue!");
 
                         }
+                        else if (queuePos.equals(1))
+                        {
+                            sendNoti.sendNotification();
+                        }
+
                         else if(queuePos.equals(0))
                         {
                             queuePosText.setText("Its your turn for consultation!");
@@ -141,6 +147,7 @@ public class PatientPage extends AppCompatActivity {
     
     public void initPatientPage()
     {
+
 
         dbMngr.clinicInfos.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<ClinicInfo>>() {
             @Override
