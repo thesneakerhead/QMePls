@@ -193,5 +193,37 @@
             android:drawableLeft="@drawable/walkin_logo"
             />
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        >
+
+        <Button
+            android:id="@+id/dequeue_button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Next Patient"
+            android:textColor="@color/white"
+            android:layout_marginRight="20dp"
+            android:paddingHorizontal="25dp"
+            />
+
+        <Button
+            android:id="@+id/add_walkin2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Walk In"
+            android:textColor="@color/white"
+            android:drawableLeft="@drawable/walkin_logo"
+            />
+
+
     </LinearLayout>
 </LinearLayout>
