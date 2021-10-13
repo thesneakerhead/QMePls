@@ -39,7 +39,7 @@ import lombok.SneakyThrows;
 
 public class ClinicPage extends AppCompatActivity {
     private Button nextPatientButton;
-    private ImageView swapBtn;
+    private Button swapBtn, pushBtn;
     private Button walkInPatient;
     private TextView signoutButton;
     private TextView queueText;
@@ -52,7 +52,7 @@ public class ClinicPage extends AppCompatActivity {
     public ArrayList<String> names;
     public ArrayList<String> index;
     private EditText walkInName;
-    private Button next_confirm, next_cancel, confirm, cancel, swap_confirm, swap_cancel;
+    private Button next_confirm, next_cancel, walkin_confirm, walkin_cancel, swap_confirm, swap_cancel, push_confirm, push_cancel;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
     private HttpRequestHandler hndlr;
@@ -77,6 +77,8 @@ public class ClinicPage extends AppCompatActivity {
         index = new ArrayList<>();
         walkInPatient = findViewById(R.id.add_walkin);
         clinic_Name = findViewById(R.id.clinic_name);
+        swapBtn = findViewById(R.id.swap_button);
+        pushBtn = findViewById(R.id.push_button);
         dialogBuilder = new AlertDialog.Builder(this);
 
 
@@ -96,6 +98,7 @@ public class ClinicPage extends AppCompatActivity {
                     nextPatientButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            nextPatient();
                             try {
                                 hndlr.deQueue(clinicUID)
                                         .thenApply(s->{
@@ -130,12 +133,18 @@ public class ClinicPage extends AppCompatActivity {
             }
         });
 
-//        swapBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                swapPatient();
-//            }
-//        });
+        swapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                swapPatient();
+            }
+        });
+        pushBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pushPatient();
+            }
+        });
 
 
     }
@@ -255,25 +264,25 @@ public class ClinicPage extends AppCompatActivity {
                 //                                e.printStackTrace();
                 //                            }
                 //                        }
+                dialog.dismiss();
             }
         });
     }
     public void addWalkinPatient(){
-//        dialogBuilder = new AlertDialog.Builder(this);
         final View walkinPopUpView = getLayoutInflater().inflate(R.layout.walkin_popup,null);
         walkInName = walkinPopUpView.findViewById(R.id.walkin_name);
-        confirm = walkinPopUpView.findViewById(R.id.confirm);
-        cancel = walkinPopUpView.findViewById(R.id.cancel);
+        walkin_confirm = walkinPopUpView.findViewById(R.id.walkin_confirm);
+        walkin_cancel = walkinPopUpView.findViewById(R.id.walkin_cancel);
         dialogBuilder.setView(walkinPopUpView);
         dialog = dialogBuilder.create();
         dialog.show();
-        cancel.setOnClickListener(new View.OnClickListener() {
+        walkin_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
-        confirm.setOnClickListener(new View.OnClickListener() {
+        walkin_confirm.setOnClickListener(new View.OnClickListener() {
             @SneakyThrows
             @Override
             public void onClick(View v) {
@@ -293,7 +302,6 @@ public class ClinicPage extends AppCompatActivity {
     }
 
     public void swapPatient(){
-
         final View swapPopUpView = getLayoutInflater().inflate(R.layout.swap_popup,null);
         swap_confirm = swapPopUpView.findViewById(R.id.swap_confirm);
         swap_cancel = swapPopUpView.findViewById(R.id.swap_cancel);
@@ -307,6 +315,27 @@ public class ClinicPage extends AppCompatActivity {
             }
         });
         swap_confirm.setOnClickListener(new View.OnClickListener() {
+            @SneakyThrows
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+    public void pushPatient(){
+        final View pushPopUpView = getLayoutInflater().inflate(R.layout.push_popup,null);
+        push_confirm = pushPopUpView.findViewById(R.id.push_confirm);
+        push_cancel = pushPopUpView.findViewById(R.id.push_cancel);
+        dialogBuilder.setView(pushPopUpView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+        push_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        push_confirm.setOnClickListener(new View.OnClickListener() {
             @SneakyThrows
             @Override
             public void onClick(View v) {

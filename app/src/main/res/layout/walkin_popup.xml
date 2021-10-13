@@ -46,7 +46,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/walkin_confirm"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -60,7 +60,7 @@
             android:layout_weight="1"/>
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/walkin_cancel"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_gravity="right"

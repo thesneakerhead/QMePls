@@ -206,22 +206,21 @@
         >
 
         <Button
-            android:id="@+id/dequeue_button2"
+            android:id="@+id/swap_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Next Patient"
+            android:text="Swap"
             android:textColor="@color/white"
             android:layout_marginRight="20dp"
             android:paddingHorizontal="25dp"
             />
 
         <Button
-            android:id="@+id/add_walkin2"
+            android:id="@+id/push_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add Walk In"
+            android:text="Push"
             android:textColor="@color/white"
-            android:drawableLeft="@drawable/walkin_logo"
             />
 
 
