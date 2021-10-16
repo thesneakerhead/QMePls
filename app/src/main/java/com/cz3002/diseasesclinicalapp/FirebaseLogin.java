@@ -160,6 +160,7 @@ public class FirebaseLogin extends AppCompatActivity {
         });
     }
     private void navigateBasedOnAccount(String uid, String providerId) {
+        Log.d("test","test");
 
         DatabaseReference dbRef = dbMngr.appDatabase.getReference("Users").child(uid);
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -184,6 +184,7 @@ public class PatientPage extends AppCompatActivity {
     }
 
     private void displaySymptomCards() {
+
         ArrayList<SymptomCard> symptomCards = curPatientUser.getSymptomCards();
         //ArrayList<SymptomCard> clinicNames = curPatientUser.getClinicNames();
 

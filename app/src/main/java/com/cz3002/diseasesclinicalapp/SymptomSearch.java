@@ -198,7 +198,8 @@ public class SymptomSearch extends AppCompatActivity {
             intent.putExtra("symptoms",selectedListOfSymptoms);
             SymptomSearch.this.startActivity(intent);
         }catch (Exception e){
-            Toast.makeText(SymptomSearch.this,"You must add at least one symptom",Toast.LENGTH_LONG);
+            Intent intent = new Intent(SymptomSearch.this, MapsActivity.class);
+            SymptomSearch.this.startActivity(intent);
         }
 //        FirebaseDatabaseManager dbMngr = new FirebaseDatabaseManager(SymptomSearch.this);
 //        DatabaseReference dbRef = dbMngr.getDatabaseReference("app","Users",
