@@ -268,7 +268,7 @@
                                 </LinearLayout>
 
                                 <Button
-                                    android:id="@+id/clinicButton2"
+                                    android:id="@+id/clinicbutton2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
@@ -375,7 +375,7 @@
                                 </LinearLayout>
 
                                 <Button
-                                    android:id="@+id/clinicButton3"
+                                    android:id="@+id/clinicbutton3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"

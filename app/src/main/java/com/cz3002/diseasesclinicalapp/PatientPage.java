@@ -239,21 +239,21 @@ public class PatientPage extends AppCompatActivity {
                                                 String lastCancelledPatient = snapshot.getValue(t);
                                                 if(lastCancelledPatient.equals(loggedInUser.getUid()))
                                                 {
-                                                    queuePosText.setText("you've been removed from the queue!");
+                                                    //queuePosText.setText("you've been removed from the queue!");
                                                 }
                                                 else{
-                                                    queuePosText.setText("your appointment has been completed");
+                                                    //queuePosText.setText("your appointment has been completed");
                                                 }
 
                                             }
                                             else{
-                                                queuePosText.setText("your appointment has been completed");
+                                                //queuePosText.setText("your appointment has been completed");
                                             }
                                         }
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError error) {
-                                            queuePosText.setText("your appointment has been completed");
+                                            //queuePosText.setText("your appointment has been completed");
                                         }
                                     });
                         }
@@ -264,11 +264,11 @@ public class PatientPage extends AppCompatActivity {
 
                         else if(queuePos.equals(0))
                         {
-                            queuePosText.setText("Its your turn for consultation!");
+                            //queuePosText.setText("Its your turn for consultation!");
                         }
                         else
                         {
-                            queuePosText.setText(String.valueOf(queuePos));
+                            //queuePosText.setText(String.valueOf(queuePos));
                         }
                 }
                 else{
@@ -283,21 +283,21 @@ public class PatientPage extends AppCompatActivity {
                                         String lastCancelledPatient = snapshot.getValue(t);
                                         if(lastCancelledPatient.equals(loggedInUser.getUid()))
                                         {
-                                            queuePosText.setText("you've been removed from the queue!");
+                                            //queuePosText.setText("you've been removed from the queue!");
                                         }
                                         else{
-                                            queuePosText.setText("your appointment has been completed");
+                                            //queuePosText.setText("your appointment has been completed");
                                         }
 
                                     }
                                     else{
-                                        queuePosText.setText("your appointment has been completed");
+                                        //queuePosText.setText("your appointment has been completed");
                                     }
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-                                    queuePosText.setText("your appointment has been completed");
+                                    //queuePosText.setText("your appointment has been completed");
                                 }
                             });
                 }

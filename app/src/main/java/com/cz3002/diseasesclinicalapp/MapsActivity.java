@@ -366,7 +366,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         caddr = "clinicaddr";
                         cnum = "clinicnum";
                         copening = "clinicopening";
-                        cbutton = "clinicButton";
+                        cbutton = "clinicbutton";
 
                         try {
                             //iterate each card number
@@ -382,7 +382,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             int copening_card = getResources().getIdentifier(copening, "id", getPackageName());
                             int cbutton_card = getResources().getIdentifier(cbutton, "id", getPackageName());
                             //Find View ID
-
+                            Log.d("debug","debug1");
                             listenForQueueChanges(b.getString("uuid"),cardno);
 
 //                            switch (cardno)
@@ -405,9 +405,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             clinicnum = findViewById(cnum_card);
                             clinicopening = findViewById(copening_card);
                             qButton = findViewById(cbutton_card);
+                            Log.d("debug","debug2");
                             //ArrayList<String> clinicTags = new ArrayList<String>();
                             String tagString = b.getString("uuid")+","+b.getString("name");
                             qButton.setTag(tagString);
+                            Log.d("debug","debug3");
                             qButton.setOnClickListener(new View.OnClickListener() {
                                 @SneakyThrows
                                 @Override
@@ -417,7 +419,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     String[] tags = tagString.split(",");
                                     String clinicUUID = tags[0];
                                     String clinicName = tags[1];
-
+                                    Log.d("debug","debug4");
                                     HttpRequestHandler hndlr = new HttpRequestHandler();
                                     hndlr.joinQueue(clinicUUID,loggedInUser.getUid())
                                             .thenApply(s->{
@@ -516,6 +518,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                             ArrayList<String> queue = snapshot.getValue(t);
                             String queueString = String.valueOf(queue.size())+ " in Queue";
+                            Log.d("debug","debug5");
                             if (cardNo==1)
                             {
                                 clinic1queueText.setText(queueString);
@@ -550,7 +553,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        Log.d("debug","debug6");
                     }
                 });
     }
