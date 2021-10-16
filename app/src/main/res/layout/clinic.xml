@@ -101,16 +101,14 @@
                         android:src="@drawable/ic_users">
 
                     </ImageView>
+
                     <TextView
                         android:id="@+id/queue_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5 in Queue"
-                        android:textColor="@color/cobalt"
-                        android:textStyle="bold"
                         android:layout_gravity="center"
-                        >
-                    </TextView>
+                        android:textColor="@color/cobalt"
+                        android:textStyle="bold"></TextView>
                 </LinearLayout>
             </TableRow>
 
@@ -120,19 +118,19 @@
                 android:padding="10dp">
 
                 <TextView
+                    android:id="@+id/NameLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
-                    android:text="Name"
                     android:textColor="@color/cobalt"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/IndexLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="30dp"
-                    android:text="Index"
                     android:textColor="@color/cobalt"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -146,10 +144,9 @@
 
                 <TextView
                     android:id="@+id/patient_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="63dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
-                    android:text="Name 1"
                     android:textColor="@color/cobalt"
                     android:textSize="14sp" />
 
@@ -158,7 +155,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="30dp"
-                    android:text="Index 1"
                     android:textColor="@color/cobalt"
                     android:textSize="14sp" />
             </TableRow>
@@ -194,35 +190,33 @@
             />
 
 
-    </LinearLayout>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/card"
-        android:layout_marginTop="50dp"
         android:orientation="horizontal"
-        android:layout_gravity="center"
-        >
-
-        <Button
-            android:id="@+id/swap_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Swap"
-            android:textColor="@color/white"
-            android:layout_marginRight="20dp"
-            android:paddingHorizontal="25dp"
-            />
-
-        <Button
-            android:id="@+id/push_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Push"
-            android:textColor="@color/white"
-            />
-
+        android:layout_marginTop="50dp"/>
 
     </LinearLayout>
+
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="185dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="#BD0303"
+        android:text="Remove Current Patient"
+        android:textColor="#FFFFFF"
+        android:textColorLink="#FFFFFF" />
+
+
+
+    <Button
+        android:id="@+id/push_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Requeue current patient"
+        android:textColor="@color/white" />
+
+
 </LinearLayout>

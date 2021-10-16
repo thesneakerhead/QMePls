@@ -64,6 +64,14 @@ public class HttpRequestHandler {
                 CompletableFuture.supplyAsync(() ->post("https://asia-southeast1-clinicaldatabase-49662.cloudfunctions.net/deQueue",json));
         return completableFuture;
     }
+    public CompletableFuture<String> swapPatients(String clinicUID) throws JsonProcessingException{
+        Map<String,String> payload = new HashMap<>();
+        payload.put("clinicUID",clinicUID);
+        String json = new ObjectMapper().writeValueAsString(payload);
+        CompletableFuture<String> completableFuture =
+                CompletableFuture.supplyAsync(() ->post("https://asia-southeast1-clinicaldatabase-49662.cloudfunctions.net/skipPatient",json));
+        return completableFuture;
+    }
 
 
 

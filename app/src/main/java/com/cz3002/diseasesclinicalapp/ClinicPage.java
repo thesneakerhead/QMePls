@@ -34,6 +34,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.jar.Attributes;
 
 import lombok.SneakyThrows;
 
@@ -57,6 +58,8 @@ public class ClinicPage extends AppCompatActivity {
     private AlertDialog dialog;
     private HttpRequestHandler hndlr;
     private ClinicUser curUser;
+    private TextView NameLabel,IndexLabel;
+    private String clinicUID;
 
     //private List<String> names = new ArrayList<>();
     @SneakyThrows
@@ -65,6 +68,8 @@ public class ClinicPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.clinic);
         mAuth = FirebaseAuth.getInstance();
+        NameLabel = findViewById(R.id.NameLabel);
+        IndexLabel = findViewById(R.id.IndexLabel);
         mUser = mAuth.getCurrentUser();
         dbMngr = new FirebaseDatabaseManager(ClinicPage.this);
         hndlr = new HttpRequestHandler();
@@ -77,7 +82,6 @@ public class ClinicPage extends AppCompatActivity {
         index = new ArrayList<>();
         walkInPatient = findViewById(R.id.add_walkin);
         clinic_Name = findViewById(R.id.clinic_name);
-        swapBtn = findViewById(R.id.swap_button);
         pushBtn = findViewById(R.id.push_button);
         dialogBuilder = new AlertDialog.Builder(this);
 
@@ -92,22 +96,13 @@ public class ClinicPage extends AppCompatActivity {
                 if(snapshot.getValue()!=null)
                 {
                     curUser = snapshot.getValue(ClinicUser.class);
-                    String clinicUID = curUser.getClinicUID();
+                    clinicUID = curUser.getClinicUID();
                     setClinicName(clinicUID);
                     listenForQueueChanges(clinicUID);
                     nextPatientButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             nextPatient();
-                            try {
-                                hndlr.deQueue(clinicUID)
-                                        .thenApply(s->{
-                                            Log.e("the result", s);
-                                            return null;
-                                        });
-                            } catch (JsonProcessingException e) {
-                                e.printStackTrace();
-                            }
                         }
                     });
                 }
@@ -133,12 +128,7 @@ public class ClinicPage extends AppCompatActivity {
             }
         });
 
-        swapBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                swapPatient();
-            }
-        });
+
         pushBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,17 +170,21 @@ public class ClinicPage extends AppCompatActivity {
                                             count += 1;
                                             indexStr = indexStr + count + "\n";
                                         }
+                                        NameLabel.setText("Name");
+                                        IndexLabel.setText("Label");
                                         patientNames.setText(nameStr);
                                         patientIndex.setText(indexStr);
 
                                         return null;
                                     } );
-                            String queueStr = getString(R.string.queue, String.valueOf(queue.size()));
+                            String queueStr = String.valueOf(queue.size());
                             queueText.setText(queueStr);
 
                         }
                         else{
-                            String queueStr = getString(R.string.queue, "0");
+                            String queueStr = "0";
+                            NameLabel.setText("");
+                            IndexLabel.setText("");
                             queueText.setText(queueStr);
                             patientNames.setText("");
                             patientIndex.setText("");
@@ -254,6 +248,15 @@ public class ClinicPage extends AppCompatActivity {
             @SneakyThrows
             @Override
             public void onClick(View v) {
+                try {
+                    hndlr.deQueue(clinicUID)
+                            .thenApply(s->{
+                                Log.e("the result", s);
+                                return null;
+                            });
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
                 // try {
                 //                                hndlr.deQueue(clinicUID)
                 //                                        .thenApply(s->{
@@ -301,27 +304,27 @@ public class ClinicPage extends AppCompatActivity {
         });
     }
 
-    public void swapPatient(){
-        final View swapPopUpView = getLayoutInflater().inflate(R.layout.swap_popup,null);
-        swap_confirm = swapPopUpView.findViewById(R.id.swap_confirm);
-        swap_cancel = swapPopUpView.findViewById(R.id.swap_cancel);
-        dialogBuilder.setView(swapPopUpView);
-        dialog = dialogBuilder.create();
-        dialog.show();
-        swap_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        swap_confirm.setOnClickListener(new View.OnClickListener() {
-            @SneakyThrows
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-    }
+//    public void swapPatient(){
+//        final View swapPopUpView = getLayoutInflater().inflate(R.layout.swap_popup,null);
+//        swap_confirm = swapPopUpView.findViewById(R.id.swap_confirm);
+//        swap_cancel = swapPopUpView.findViewById(R.id.swap_cancel);
+//        dialogBuilder.setView(swapPopUpView);
+//        dialog = dialogBuilder.create();
+//        dialog.show();
+//        swap_cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
+//        swap_confirm.setOnClickListener(new View.OnClickListener() {
+//            @SneakyThrows
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
+//    }
     public void pushPatient(){
         final View pushPopUpView = getLayoutInflater().inflate(R.layout.push_popup,null);
         push_confirm = pushPopUpView.findViewById(R.id.push_confirm);
