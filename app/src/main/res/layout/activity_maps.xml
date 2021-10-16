@@ -33,7 +33,7 @@
         android:layout_height="500dp"
         android:background="@drawable/map_bottom_sheet_shape"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="30dp"
+        android:padding="20dp"
 
 
         >
@@ -49,12 +49,11 @@
             <!--        nearest text and filter-->
             <ImageView
                 android:id="@+id/minimize"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="48dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_dropdown"
                 android:clickable="true"
-                ></ImageView>
+                android:src="@drawable/ic_rectangle_470"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -86,6 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="60dp"
+                android:layout_gravity="center_horizontal"
                 >
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -184,7 +184,7 @@
                                 </LinearLayout>
 
                                 <Button
-                                    android:id="@+id/clinicButton1"
+
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"

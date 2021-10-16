@@ -20,7 +20,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
         android:drawableRight="@drawable/verified_logo"
-
         />
 
     <ImageView
