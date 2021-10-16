@@ -18,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -62,7 +61,7 @@ public class SymptomSearch extends AppCompatActivity {
     public static final String TAG = "YOUR-TAG-NAME";
     int chipIdCounter=1;
     ArrayList<String> selectedListOfSymptoms;
-    private ChipGroup chip_group;
+
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,14 +78,8 @@ public class SymptomSearch extends AppCompatActivity {
 
         EditText editText = findViewById(R.id.edit_text);
         ListView listViewTop = findViewById(R.id.list_view_top);
+        ChipGroup chip_group = findViewById(R.id.chip_group);
         Button symptom_button =findViewById(R.id.symptom_button);
-        LinearLayout symptomCardLayout= findViewById(R.id.symptomCardLayout);
-
-
-        //add card
-        final View symptom_card = getLayoutInflater().inflate(R.layout.symptom_card,null,false);
-        symptomCardLayout.addView(symptom_card);
-        chip_group= symptom_card.findViewById(R.id.chip_group);
 
         selectedListOfSymptoms = new ArrayList<>();
 
@@ -147,8 +140,6 @@ public class SymptomSearch extends AppCompatActivity {
 
         });
 
-
-
         listViewTop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             Chip chip;
             @Override
@@ -187,8 +178,6 @@ public class SymptomSearch extends AppCompatActivity {
                     }
                 });
             }
-
-
         });
     }
     public void buttonClickFunction(View view) throws PackageManager.NameNotFoundException {
