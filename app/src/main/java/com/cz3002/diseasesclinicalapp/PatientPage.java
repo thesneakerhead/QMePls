@@ -5,17 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.ObservableList;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,7 +20,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -55,22 +50,6 @@ public class PatientPage extends AppCompatActivity {
     private PatientUser curPatientUser;
     private OngoingSymptomCard ongoingCard;
     private FrameLayout myLayout;
-    private CardView profilecard1, profilecard2;
-    private TextView clinicname1, clinicname2;
-    private TextView dateTimeCard1, dateTimeCard2;
-//    private TextView ongoingText;
-    private ChipGroup chip_group_profile1, chip_group_profile2;
-
-
-    //test
-    private CardView profilecard;
-    private TextView clinicname;
-    private TextView dateTimeCard;
-    private TextView ongoingText;
-    private ChipGroup chip_group_profile;
-    private LinearLayout layout_list;
-    private Button testButton;
-
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,25 +67,6 @@ public class PatientPage extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         loggedInUser = firebaseAuth.getCurrentUser();
 
-//        //cards
-//       profilecard1 = findViewById(R.id.profilecard1);
-//       profilecard2 = findViewById(R.id.profilecard1);
-//       clinicname1 = findViewById(R.id.clinicname1);
-//       clinicname2 = findViewById(R.id.clinicname2);
-//       dateTimeCard1 = findViewById(R.id.dateTimeCard1);
-//       dateTimeCard2 = findViewById(R.id.dateTimeCard2);
-//       ongoingText= findViewById(R.id.ongoingText);
-//       chip_group_profile1= findViewById(R.id.chip_group_profile1);
-//       chip_group_profile2= findViewById(R.id.chip_group_profile2);
-
-        //cards
-        profilecard = findViewById(R.id.profilecard);
-        clinicname = findViewById(R.id.clinicname);
-        dateTimeCard = findViewById(R.id.dateTimeCard);
-        ongoingText= findViewById(R.id.ongoingText);
-        chip_group_profile= findViewById(R.id.chip_group_profile);
-        layout_list= findViewById(R.id.layout_list);
-        testButton= findViewById(R.id.testButton);
 
 
         // Button to join queue
@@ -166,13 +126,6 @@ public class PatientPage extends AppCompatActivity {
             }
         });
 
-        testButton.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                addView();
-            }
-        });
 
 
     }
@@ -183,7 +136,6 @@ public class PatientPage extends AppCompatActivity {
 
     private void displaySymptomCards() {
         ArrayList<SymptomCard> symptomCards = curPatientUser.getSymptomCards();
-        //ArrayList<SymptomCard> clinicNames = curPatientUser.getClinicNames();
 
         //ongoing
         //editClinicName
@@ -192,22 +144,12 @@ public class PatientPage extends AppCompatActivity {
         //editvisibility card
         //edit visibility ongoing
 
-//          profilecard1, profilecard2;
-//          clinicname1, clinicname2;
-//          dateTimeCard1, dateTimeCard2;
-//          ongoingText; chip_group_profile1;
 
-        //edit text with data
-//        for(int i=0; i<symptomCards.size(); i++){
 
-  //      }
-    }
-    private void addView() {
+        //recent
+        for(int i=0; i<symptomCards.size(); i++){
 
-        final View cardView = getLayoutInflater().inflate(R.layout.profile_card,null,false);
-        layout_list.addView(cardView);
-        // layout_list.removeView(cardView);
-
+        }
     }
 
     public void listenForQueueChanges(String clinicUID,String patientUID)
