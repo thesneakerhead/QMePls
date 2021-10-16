@@ -78,7 +78,7 @@
                     android:visibility="visible"
                     />
                 <LinearLayout
-                    android:id="@+id/layout_list"
+                    android:id="@+id/ongoingLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"></LinearLayout>
@@ -160,6 +160,11 @@
                 android:textColor="@color/cobalt"
                 android:textStyle="bold"
                 />
+            <LinearLayout
+                android:id="@+id/recentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"></LinearLayout>
 <!--            &lt;!&ndash;    Symptom Card 2 &ndash;&gt;-->
 <!--            <com.google.android.material.card.MaterialCardView-->
 <!--                android:id="@+id/profilecard2"-->

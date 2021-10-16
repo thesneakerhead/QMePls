@@ -68,7 +68,7 @@ public class PatientPage extends AppCompatActivity {
     private TextView dateTimeCard;
     private TextView ongoingText;
     private ChipGroup chip_group_profile;
-    private LinearLayout layout_list;
+    private LinearLayout ongoingLayout, recentLayout;
     private Button testButton;
 
     @SneakyThrows
@@ -105,7 +105,8 @@ public class PatientPage extends AppCompatActivity {
         dateTimeCard = findViewById(R.id.dateTimeCard);
         ongoingText= findViewById(R.id.ongoingText);
         chip_group_profile= findViewById(R.id.chip_group_profile);
-        layout_list= findViewById(R.id.layout_list);
+        ongoingLayout= findViewById(R.id.ongoingLayout);
+        recentLayout= findViewById(R.id.recentLayout);
         testButton= findViewById(R.id.testButton);
 
 
@@ -204,13 +205,8 @@ public class PatientPage extends AppCompatActivity {
   //      }
     }
     private void addView() {
-
-        //recent
-//        for(int i=0; i<symptomCards.size(); i++){
-//
-//        }
         final View cardView = getLayoutInflater().inflate(R.layout.profile_card,null,false);
-        layout_list.addView(cardView);
+        ongoingLayout.addView(cardView);
         // layout_list.removeView(cardView);
 
     }
