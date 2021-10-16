@@ -197,7 +197,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             System.out.println("false");
                             bottombar = findViewById(R.id.bottombar);
                             ViewGroup.LayoutParams bottombar2 = bottombar.getLayoutParams();
-                            bottombar2.height = 300;
+                            bottombar2.height = 200;
                             bottombar.setLayoutParams(bottombar2);
                             minimized=true;
                             disableScroll();
