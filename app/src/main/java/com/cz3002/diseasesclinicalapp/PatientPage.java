@@ -147,9 +147,9 @@ public class PatientPage extends AppCompatActivity {
 
 
         //recent
-        for(int i=0; i<symptomCards.size(); i++){
-
-        }
+//        for(int i=0; i<symptomCards.size(); i++){
+//
+//        }
     }
 
     public void listenForQueueChanges(String clinicUID,String patientUID)
