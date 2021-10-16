@@ -63,92 +63,111 @@
                     />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/QueueText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="# ppl infront"
-                android:layout_marginHorizontal="160dp"
-                android:textAppearance="?attr/textAppearanceBody2"
-                android:textColor="@color/cobalt" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ongoing"
-                android:textAppearance="?attr/textAppearanceHeadline6"
-                android:layout_marginHorizontal="30dp"
-                android:textColor="@color/cobalt"
-                android:textStyle="bold"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="10dp"
-                />
+                <TextView
+                    android:id="@+id/QueueText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="# ppl infront"
+                    android:layout_marginHorizontal="160dp"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="@color/cobalt" />
+
+                <TextView
+                    android:id="@+id/ongoingText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ongoing"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:layout_marginHorizontal="30dp"
+                    android:textColor="@color/cobalt"
+                    android:textStyle="bold"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="visible"
+                    />
 
 
 
-            <!--    Symptom Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30dp"
-                android:elevation="2dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="10dp">
-
-                <LinearLayout
+                <!--    Symptom Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/profilecard1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginHorizontal="30dp"
+                    android:elevation="2dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="10dp"
+                    android:visibility="visible"
+                    >
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="50dp">
-
-                        <!-- Title, secondary and supporting text -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="ABC Clinic"
-                            android:textAppearance="?attr/textAppearanceHeadline6" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="6 Aug 2021, 8pm"
-                            android:textAppearance="?attr/textAppearanceOverline"
-                            android:textColor="?android:attr/textColorSecondary" />
-
-                    </LinearLayout>
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/chip_group_profile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@color/cobalt"
-                        android:paddingTop="20dp"
-                        android:paddingBottom="20dp"
-                        android:textColor="@color/white"
-                        app:singleSelection="true"></com.google.android.material.chip.ChipGroup>
+                        android:orientation="horizontal">
 
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="30dp">
+
+                            <!-- Title, secondary and supporting text -->
+                            <TextView
+                                android:id="@+id/clinicname1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ABC Clinic"
+                                android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                            <TextView
+                                android:id="@+id/dateTimeCard1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="6 Aug 2021, 8pm"
+                                android:textAppearance="?attr/textAppearanceOverline"
+                                android:textColor="?android:attr/textColorSecondary" />
+
+                            <TextView
+                                android:id="@+id/clinicaddr1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text=""
+                                android:textAppearance="?attr/textAppearanceOverline"
+                                android:textColor="?android:attr/textColorSecondary" />
+
+
+                        </LinearLayout>
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chip_group_profile1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/cobalt"
+                            android:paddingTop="20dp"
+                            android:paddingBottom="20dp"
+                            android:textColor="@color/white"
+                            app:singleSelection="true"></com.google.android.material.chip.ChipGroup>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginBottom="10dp"
                 android:text="Recent"
-                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textAppearance="?attr/textAppearanceBody2"
                 android:textColor="@color/cobalt"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="visible"/>
             <!--    Symptom Card 2 -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/profilecard2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="30dp"
@@ -166,19 +185,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="50dp">
+                        android:padding="30dp">
 
                         <!-- Title, secondary and supporting text -->
                         <TextView
+                            android:id="@+id/clinicname2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="ABC Clinic"
                             android:textAppearance="?attr/textAppearanceHeadline6" />
 
                         <TextView
+                            android:id="@+id/dateTimeCard2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
                             android:text="6 Aug 2021, 8pm"
                             android:textAppearance="?attr/textAppearanceOverline"
                             android:textColor="?android:attr/textColorSecondary" />
@@ -186,7 +206,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/chip_group"
+                        android:id="@+id/chip_group_profile2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/cobalt"

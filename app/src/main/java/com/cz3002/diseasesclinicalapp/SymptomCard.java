@@ -13,6 +13,7 @@ public class SymptomCard {
     public ArrayList<String> symptoms;
     public String clinicName;
     public String date;
+
 }
 
 

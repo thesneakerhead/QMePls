@@ -49,6 +49,7 @@
         android:textColor="@color/cobalt"
         android:textStyle="bold"
         android:paddingLeft="8dp"
+        android:paddingTop="40dp"
         />
 
 <!--    <ListView
@@ -75,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="50dp">
+                android:padding="30dp">
 
                 <!-- Title, secondary and supporting text -->
                 <TextView
@@ -87,7 +88,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:text="6 Aug 2021, 8pm"
                     android:textAppearance="?attr/textAppearanceOverline"
                     android:textColor="?android:attr/textColorSecondary" />
@@ -95,12 +95,12 @@
             </LinearLayout>
 
             <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
                 app:singleSelection="true"
-                android:id="@+id/chip_group"
                 android:textColor="@color/white"
                 android:backgroundTint="@color/cobalt"
                 >
