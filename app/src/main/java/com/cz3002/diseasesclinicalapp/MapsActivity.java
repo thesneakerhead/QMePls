@@ -74,11 +74,13 @@ import org.w3c.dom.Text;
 import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.CompletableFuture;
 
 import kotlin.Metadata;
@@ -428,7 +430,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                 ongoingCard.setClinicUID(clinicUUID);
                                                 ongoingCard.setSymptoms(selectedListOfSymptoms);
                                                 ongoingCard.setClinicName(clinicName);
-                                                Date c = Calendar.getInstance().getTime();
+                                                ZoneId asiaSingapore = ZoneId.of("Asia/Singapore");
+                                                Calendar nowAsiaSingapore = Calendar.getInstance(TimeZone.getTimeZone(asiaSingapore));
+                                                Date c = nowAsiaSingapore.getTime();
                                                 SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                                                 String formattedDate = df.format(c);
                                                 ongoingCard.setDate(formattedDate);

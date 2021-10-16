@@ -24,6 +24,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
@@ -140,7 +141,11 @@ public class PatientPage extends AppCompatActivity {
                 if(snapshot.getValue()!=null)
                 {
                     ongoingCard = snapshot.getValue(OngoingSymptomCard.class);
-                    displayOngoingCard();
+                    if(ongoingCard.getStatus().equals("Ongoing"))
+                    {
+                        displayOngoingCard();
+                    }
+
                     fab.setEnabled(false);
                     listenForQueueChanges(ongoingCard.getClinicUID(),loggedInUser.getUid());
 
@@ -180,6 +185,69 @@ public class PatientPage extends AppCompatActivity {
     }
 
     private void displayOngoingCard() {
+        final View cardView = getLayoutInflater().inflate(R.layout.profile_card,null,false);
+        TextView clinicNameText,clinicAdrText,dateTimeText,queueText;
+        ChipGroup chipGroup = cardView.findViewById(R.id.chip_group_profile);
+        ArrayList<String> symptoms = ongoingCard.getSymptoms();
+        if (symptoms!=null) {
+            for (String symptom : symptoms) {
+                Chip chip = new Chip(PatientPage.this);
+                chip.setText(symptom);
+                //chip.setCloseIconEnabled(true);
+                //chip.setBackgroundColor();
+                chipGroup.addView(chip);
+            }
+        }
+
+        clinicNameText = cardView.findViewById(R.id.clinicname);
+        clinicAdrText = cardView.findViewById(R.id.clinicaddr);
+        dateTimeText = cardView.findViewById(R.id.dateTimeCard);
+        queueText = cardView.findViewById(R.id.QueueText);
+        ongoingLayout.addView(cardView);
+        clinicNameText.setText(ongoingCard.getClinicName());
+        dateTimeText.setText(ongoingCard.getDate());
+        DatabaseReference dbRef = dbMngr
+                .getDatabaseReference("clinic","clinicDictionary",ongoingCard.clinicUID,"address");
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                GenericTypeIndicator<String> t = new GenericTypeIndicator<String>() {};
+                String address = snapshot.getValue(t);
+                clinicAdrText.setText(address);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        DatabaseReference queueRef = dbMngr
+                .getDatabaseReference("clinic","clinicDictionary",ongoingCard.clinicUID,"clinicQueue");
+        queueRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue()!=null) {
+                    GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                    ArrayList<String> queue = snapshot.getValue(t);
+                    Integer queuePos = queue.indexOf(loggedInUser.getUid());
+                    if (queuePos.equals(0))
+                    {
+                        queueText.setText("Its Your Turn!");
+                    }
+                    else
+                    {
+                        String posText = String.valueOf(queuePos) + "Ahead of you";
+                        queueText.setText(posText);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 
@@ -206,8 +274,7 @@ public class PatientPage extends AppCompatActivity {
   //      }
     }
     private void addView() {
-        final View cardView = getLayoutInflater().inflate(R.layout.profile_card,null,false);
-        ongoingLayout.addView(cardView);
+
         // layout_list.removeView(cardView);
 
     }
