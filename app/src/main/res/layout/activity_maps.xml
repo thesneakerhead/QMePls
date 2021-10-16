@@ -60,11 +60,7 @@
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-<<<<<<< HEAD
                 android:layout_marginTop="50dp"
-=======
-                android:layout_marginTop="60dp"
->>>>>>> parent of 13614f7 (Revert "partially done add view profile and symptom cards")
                 android:layout_gravity="center_horizontal"
                 >
                 <LinearLayout
@@ -164,11 +160,7 @@
                                 </LinearLayout>
 
                                 <Button
-<<<<<<< HEAD
                                     android:id="@+id/clinicbutton1"
-=======
-
->>>>>>> parent of 13614f7 (Revert "partially done add view profile and symptom cards")
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"

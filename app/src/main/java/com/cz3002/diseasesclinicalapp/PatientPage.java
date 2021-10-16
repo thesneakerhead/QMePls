@@ -109,6 +109,12 @@ public class PatientPage extends AppCompatActivity {
         testButton= findViewById(R.id.testButton);
 
 
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
         // Button to join queue
         userDbRef = dbMngr.getDatabaseReference("app","Users",loggedInUser.getUid());
         userDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -136,12 +142,7 @@ public class PatientPage extends AppCompatActivity {
                     displayOngoingCard();
                     fab.setEnabled(false);
                     listenForQueueChanges(ongoingCard.getClinicUID(),loggedInUser.getUid());
-                    logoutButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            signOut();
-                        }
-                    });
+
                 }
                 else{
                     ongoingCard = null;
@@ -204,17 +205,14 @@ public class PatientPage extends AppCompatActivity {
     }
     private void addView() {
 
-<<<<<<< HEAD
         //recent
 //        for(int i=0; i<symptomCards.size(); i++){
 //
 //        }
-=======
         final View cardView = getLayoutInflater().inflate(R.layout.profile_card,null,false);
         layout_list.addView(cardView);
         // layout_list.removeView(cardView);
 
->>>>>>> parent of 13614f7 (Revert "partially done add view profile and symptom cards")
     }
 
     public void listenForQueueChanges(String clinicUID,String patientUID)
