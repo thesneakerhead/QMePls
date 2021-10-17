@@ -150,6 +150,7 @@
 
 
             <TextView
+                android:id="@+id/recentText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
@@ -160,11 +161,16 @@
                 android:textColor="@color/cobalt"
                 android:textStyle="bold"
                 />
-            <LinearLayout
-                android:id="@+id/recentLayout"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"></LinearLayout>
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:id="@+id/recentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"></LinearLayout>
+            </ScrollView>
+
 <!--            &lt;!&ndash;    Symptom Card 2 &ndash;&gt;-->
 <!--            <com.google.android.material.card.MaterialCardView-->
 <!--                android:id="@+id/profilecard2"-->

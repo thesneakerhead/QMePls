@@ -86,6 +86,7 @@
                     android:paddingHorizontal="30dp"
                     android:paddingTop="10dp">
                     <ImageView
+                        android:id="@+id/queueImage"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"

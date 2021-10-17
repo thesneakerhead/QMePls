@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -55,21 +57,11 @@ public class PatientPage extends AppCompatActivity {
     private DatabaseReference userDbRef;
     private PatientUser curPatientUser;
     private OngoingSymptomCard ongoingCard;
-    private FrameLayout myLayout;
-    private CardView profilecard1, profilecard2;
-    private TextView clinicname1, clinicname2;
-    private TextView dateTimeCard1, dateTimeCard2;
-//    private TextView ongoingText;
-    private ChipGroup chip_group_profile1, chip_group_profile2;
-
-
-    //test
-    private CardView profilecard;
-    private TextView clinicname;
-    private TextView dateTimeCard;
     private TextView ongoingText;
-    private ChipGroup chip_group_profile;
+    private TextView recentText;
     private LinearLayout ongoingLayout, recentLayout;
+    private int OngoingCardId;
+    private ArrayList<SymptomCard> symptomCards;
 
     @SneakyThrows
     @Override
@@ -99,11 +91,8 @@ public class PatientPage extends AppCompatActivity {
 //       chip_group_profile2= findViewById(R.id.chip_group_profile2);
 
         //cards
-        profilecard = findViewById(R.id.profilecard);
-        clinicname = findViewById(R.id.clinicname);
-        dateTimeCard = findViewById(R.id.dateTimeCard);
         ongoingText= findViewById(R.id.ongoingText);
-        chip_group_profile= findViewById(R.id.chip_group_profile);
+        recentText = findViewById(R.id.recentText);
         ongoingLayout= findViewById(R.id.ongoingLayout);
         recentLayout= findViewById(R.id.recentLayout);
 
@@ -123,7 +112,61 @@ public class PatientPage extends AppCompatActivity {
                 {
                     curPatientUser = snapshot.getValue(PatientUser.class);
                     nameText.setText(curPatientUser.getName());
-                    displaySymptomCards();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        userDbRef.child("symptomCards").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue()!=null)
+                {
+                    recentText.setVisibility(View.VISIBLE);
+                    recentLayout.removeAllViews();
+                    GenericTypeIndicator<ArrayList<SymptomCard>> t = new GenericTypeIndicator<ArrayList<SymptomCard>>() {};
+                    symptomCards = snapshot.getValue(t);
+                    Collections.reverse(symptomCards);
+                    for (SymptomCard card : symptomCards)
+                    {
+                        final View cardView = getLayoutInflater().inflate(R.layout.profile_card,null,false);
+                        TextView clinicNameText,clinicAdrText,dateTimeText,queueText;
+                        ImageView queueImage = cardView.findViewById(R.id.queueImage);
+                        //Set layoutparams to wrap content
+//                        LinearLayout linearLayout = cardView.findViewById(R.id.clinic1);
+//                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) linearLayout.getLayoutParams();
+//                        params.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+//                        linearLayout.setLayoutParams(params);
+                        ChipGroup chipGroup = cardView.findViewById(R.id.chip_group_profile);
+                        clinicNameText = cardView.findViewById(R.id.clinicname);
+                        dateTimeText = cardView.findViewById(R.id.dateTimeCard);
+                        ArrayList<String> symptoms = card.getSymptoms();
+                        if (symptoms!=null) {
+                            for (String symptom : symptoms) {
+                                Chip chip = new Chip(PatientPage.this);
+                                chip.setText(symptom);
+                                //chip.setCloseIconEnabled(true);
+                                //chip.setBackgroundColor();
+                                chipGroup.addView(chip);
+                            }
+                        }
+                        clinicNameText.setText(card.getClinicName());
+                        dateTimeText.setText(card.getDate());
+                        queueText = cardView.findViewById(R.id.QueueText);
+                        clinicAdrText = cardView.findViewById(R.id.clinicaddr);
+                        queueText.setVisibility(View.GONE);
+                        clinicAdrText.setVisibility(View.GONE);
+                        queueImage.setVisibility(View.GONE);
+                        recentLayout.addView(cardView);
+                    }
+
+                }
+                else{
+                    recentLayout.removeAllViews();
+                    recentText.setVisibility(View.GONE);
                 }
             }
 
@@ -142,13 +185,14 @@ public class PatientPage extends AppCompatActivity {
                     {
                         displayOngoingCard();
                     }
-
+                    ongoingText.setVisibility(View.VISIBLE);
                     fab.setEnabled(false);
-                    listenForQueueChanges(ongoingCard.getClinicUID(),loggedInUser.getUid());
+
 
                 }
                 else{
                     ongoingCard = null;
+                    ongoingText.setVisibility(View.GONE);
                     fab.setEnabled(true);
                 }
             }
@@ -174,7 +218,11 @@ public class PatientPage extends AppCompatActivity {
     }
 
     private void displayOngoingCard() {
+        HttpRequestHandler hndler = new HttpRequestHandler();
+        String clinicUID = ongoingCard.getClinicUID();
         final View cardView = getLayoutInflater().inflate(R.layout.profile_card,null,false);
+        OngoingCardId = View.generateViewId();
+        cardView.setId(OngoingCardId);
         TextView clinicNameText,clinicAdrText,dateTimeText,queueText;
         ChipGroup chipGroup = cardView.findViewById(R.id.chip_group_profile);
         ArrayList<String> symptoms = ongoingCard.getSymptoms();
@@ -196,7 +244,7 @@ public class PatientPage extends AppCompatActivity {
         clinicNameText.setText(ongoingCard.getClinicName());
         dateTimeText.setText(ongoingCard.getDate());
         DatabaseReference dbRef = dbMngr
-                .getDatabaseReference("clinic","clinicDictionary",ongoingCard.clinicUID,"address");
+                .getDatabaseReference("clinic","clinicDictionary",clinicUID,"address");
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -211,7 +259,7 @@ public class PatientPage extends AppCompatActivity {
             }
         });
         DatabaseReference queueRef = dbMngr
-                .getDatabaseReference("clinic","clinicDictionary",ongoingCard.clinicUID,"clinicQueue");
+                .getDatabaseReference("clinic","clinicDictionary",clinicUID,"clinicQueue");
         queueRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -223,12 +271,119 @@ public class PatientPage extends AppCompatActivity {
                     {
                         queueText.setText("Its Your Turn!");
                     }
+                    else if (queuePos < 0)
+                    {
+                        dbMngr.getDatabaseReference("clinic","clinicDictionary",loggedInUser.getUid()
+                                ,"lastCancelledPatient")
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @SneakyThrows
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        GenericTypeIndicator<String> t = new GenericTypeIndicator<String>() {};
+                                        String lastCancelledPatient = snapshot.getValue(t);
+                                        if(lastCancelledPatient.equals(loggedInUser.getUid()))
+                                        {
+                                            ongoingCard.setStatus("Cancelled");//User was removed from the queue by the clinic
+                                            hndler.clearCancelledPatient(clinicUID).thenApply(d->{
+                                                userDbRef.child("ongoingCard").setValue(null);
+                                                View ongoingView = ongoingLayout.findViewById(OngoingCardId);
+                                                ongoingLayout.removeView(ongoingView);
+                                                return null;
+                                            });
+                                        }
+                                        else{
+                                            ArrayList<SymptomCard> cards;
+                                            if (curPatientUser.getSymptomCards()!=null){
+                                            cards = curPatientUser.getSymptomCards();}
+                                            else{ cards = new ArrayList<SymptomCard>();
+                                            }
+
+                                            SymptomCard latestCard = new SymptomCard();
+                                            latestCard.setClinicName(ongoingCard.clinicName);
+                                            latestCard.setSymptoms(ongoingCard.getSymptoms());
+                                            latestCard.setDate(ongoingCard.getDate());
+                                            userDbRef.child("ongoingCard").setValue(null);
+                                            View ongoingView = ongoingLayout.findViewById(OngoingCardId);
+                                            ongoingLayout.removeView(ongoingView);
+                                            cards.add(latestCard);
+                                            userDbRef.child("symptomCards").setValue(cards);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+                    }
                     else
                     {
                         String posText = String.valueOf(queuePos) + "Ahead of you";
                         queueText.setText(posText);
                     }
 
+
+                }
+                else{
+                    dbMngr.getDatabaseReference("clinic","clinicDictionary",loggedInUser.getUid()
+                            ,"lastCancelledPatient")
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @SneakyThrows
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.getValue()!=null) {
+                                        GenericTypeIndicator<String> t = new GenericTypeIndicator<String>() {
+                                        };
+                                        String lastCancelledPatient = snapshot.getValue(t);
+                                        if (lastCancelledPatient.equals(loggedInUser.getUid())) {
+                                            ongoingCard.setStatus("Cancelled");//User was removed from the queue by the clinic
+                                            hndler.clearCancelledPatient(clinicUID).thenApply(d -> {
+                                                userDbRef.child("ongoingCard").setValue(null);
+                                                return null;
+                                            });
+
+                                        } else {
+                                            ArrayList<SymptomCard> cards;
+                                            if (curPatientUser.getSymptomCards()!=null){
+                                                cards = curPatientUser.getSymptomCards();}
+                                            else{ cards = new ArrayList<SymptomCard>();
+                                            }
+                                            SymptomCard latestCard = new SymptomCard();
+                                            latestCard.setClinicName(ongoingCard.clinicName);
+                                            latestCard.setSymptoms(ongoingCard.getSymptoms());
+                                            latestCard.setDate(ongoingCard.getDate());
+                                            userDbRef.child("ongoingCard").setValue(null);
+                                            View ongoingView = ongoingLayout.findViewById(OngoingCardId);
+                                            ongoingLayout.removeView(ongoingView);
+                                            cards.add(latestCard);
+                                            userDbRef.child("symptomCards").setValue(cards);
+                                        }
+
+                                    }
+                                    else{
+                                        ArrayList<SymptomCard> cards;
+                                        if (curPatientUser.getSymptomCards()!=null){
+                                            cards = curPatientUser.getSymptomCards();}
+                                        else{ cards = new ArrayList<SymptomCard>();
+                                        }
+                                        SymptomCard latestCard = new SymptomCard();
+                                        latestCard.setClinicName(ongoingCard.clinicName);
+                                        latestCard.setSymptoms(ongoingCard.getSymptoms());
+                                        latestCard.setDate(ongoingCard.getDate());
+                                        userDbRef.child("ongoingCard").setValue(null);
+                                        View ongoingView = ongoingLayout.findViewById(OngoingCardId);
+                                        ongoingLayout.removeView(ongoingView);
+                                        cards.add(latestCard);
+                                        userDbRef.child("symptomCards").setValue(cards);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                 }
             }
 
@@ -243,6 +398,13 @@ public class PatientPage extends AppCompatActivity {
     private void displaySymptomCards() {
 
         ArrayList<SymptomCard> symptomCards = curPatientUser.getSymptomCards();
+        if (symptomCards!=null)
+        {
+            for(SymptomCard card : symptomCards)
+            {
+
+            }
+        }
         //ArrayList<SymptomCard> clinicNames = curPatientUser.getClinicNames();
 
         //ongoing
