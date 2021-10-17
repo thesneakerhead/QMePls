@@ -70,7 +70,6 @@ public class PatientPage extends AppCompatActivity {
     private TextView ongoingText;
     private ChipGroup chip_group_profile;
     private LinearLayout ongoingLayout, recentLayout;
-    private Button testButton;
 
     @SneakyThrows
     @Override
@@ -81,7 +80,6 @@ public class PatientPage extends AppCompatActivity {
         setContentView(R.layout.profile__page);
         initPatientPage();
         HttpRequestHandler hndlr = new HttpRequestHandler();
-        joinQueueButton = findViewById(R.id.join_queue);
         queuePosText = findViewById(R.id.QueueText);
         logoutButton = findViewById(R.id.logout_button);
         fab = findViewById(R.id.fab);
@@ -108,7 +106,6 @@ public class PatientPage extends AppCompatActivity {
         chip_group_profile= findViewById(R.id.chip_group_profile);
         ongoingLayout= findViewById(R.id.ongoingLayout);
         recentLayout= findViewById(R.id.recentLayout);
-        testButton= findViewById(R.id.testButton);
 
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -170,14 +167,6 @@ public class PatientPage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(PatientPage.this, SymptomSearch.class);
                 startActivity(i);
-            }
-        });
-
-        testButton.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                addView();
             }
         });
 

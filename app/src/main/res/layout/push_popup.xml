@@ -23,8 +23,8 @@
             android:layout_gravity="center"
             android:text="Push Patient Index Down by 2?"
             android:textColor="@color/cobalt"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textAppearance="?attr/textAppearanceHeadline6" />
+            android:paddingTop="10dp"/>
 
 
         <LinearLayout
@@ -32,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
             android:layout_below="@id/push_text"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
 
             <Button
                 android:id="@+id/push_confirm"
@@ -40,13 +41,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:text="Confirm"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:layout_marginHorizontal="20dp"/>
 
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
 
             <Button
                 android:id="@+id/push_cancel"

@@ -23,16 +23,18 @@
             android:layout_gravity="center"
             android:text="Swap to next Patient?"
             android:textColor="@color/cobalt"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:paddingTop="10dp"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="30dp"
             android:layout_below="@id/swap_text"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
 
             <Button
                 android:id="@+id/swap_confirm"
@@ -40,13 +42,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:text="Confirm"
+                android:layout_marginHorizontal="20dp"
                 android:textColor="@color/white" />
 
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
 
             <Button
                 android:id="@+id/swap_cancel"

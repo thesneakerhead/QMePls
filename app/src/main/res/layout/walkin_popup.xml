@@ -22,8 +22,9 @@
         android:layout_gravity="center"
         android:text="Add Walk-In Patient"
         android:textColor="@color/cobalt"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:paddingTop="10dp"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        />
 
     <EditText
         android:id="@+id/walkin_name"
@@ -31,7 +32,7 @@
         android:layout_height="40dp"
         android:layout_below="@id/walkin_text"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/rounded_input_box"
         android:drawableLeft="@drawable/queue_logo"
         android:drawablePadding="10dp"
@@ -44,7 +45,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/walkin_name"
         android:layout_marginTop="30dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
 
         <Button
             android:id="@+id/walkin_confirm"
@@ -52,13 +54,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:text="Confirm"
+            android:layout_marginHorizontal="20dp"
             android:textColor="@color/white" />
 
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/walkin_cancel"

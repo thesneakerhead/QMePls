@@ -3,18 +3,17 @@ package com.cz3002.diseasesclinicalapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.ObservableArrayList;
-import androidx.databinding.ObservableList;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,12 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.jar.Attributes;
 
 import lombok.SneakyThrows;
 
@@ -60,6 +54,10 @@ public class ClinicPage extends AppCompatActivity {
     private ClinicUser curUser;
     private TextView NameLabel,IndexLabel;
     private String clinicUID;
+    private TableRow tableRow;
+    private LinearLayout tableRowLayout;
+    private ImageView deletePatient, swapBackPatient;
+    private Button testButton;
 
     //private List<String> names = new ArrayList<>();
     @SneakyThrows
@@ -84,9 +82,13 @@ public class ClinicPage extends AppCompatActivity {
         clinic_Name = findViewById(R.id.clinic_name);
         pushBtn = findViewById(R.id.push_button);
         dialogBuilder = new AlertDialog.Builder(this);
+        tableRowLayout= findViewById(R.id.tableRowLayout);
+        swapBackPatient= findViewById(R.id.swapBackPatient);
+        deletePatient= findViewById(R.id.deletePatient);
+        testButton= findViewById(R.id.test_button);
 
-
-
+        final View table_row = getLayoutInflater().inflate(R.layout.table_row,null,false);
+        tableRow= tableRowLayout.findViewById(R.id.tableRow);
 
 
         dbMngr.getDatabaseReference("app","Users",mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -135,9 +137,30 @@ public class ClinicPage extends AppCompatActivity {
                 pushPatient();
             }
         });
+//        swapBackPatient.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                pushPatient();
+//            }
+//        });
 
+
+        //table clickable
+        testButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // TEXTVIEW
+                if(table_row.getParent() != null) {
+                    ((ViewGroup)table_row.getParent()).removeView(table_row); // <- fix
+                }
+                tableRowLayout.addView(table_row);
+
+            }
+        });
 
     }
+
+
+
     public void listenForQueueChanges(String clinicUID)
     {
         dbMngr.clinicDatabase.getReference("clinicDictionary")
@@ -170,8 +193,10 @@ public class ClinicPage extends AppCompatActivity {
                                             count += 1;
                                             indexStr = indexStr + count + "\n";
                                         }
-                                        NameLabel.setText("Name");
-                                        IndexLabel.setText("Label");
+                                        NameLabel.setVisibility(View.VISIBLE);
+                                        IndexLabel.setVisibility(View.VISIBLE);
+                                        patientNames.setVisibility(View.VISIBLE);
+                                        patientIndex.setVisibility(View.VISIBLE);
                                         patientNames.setText(nameStr);
                                         patientIndex.setText(indexStr);
 
@@ -183,11 +208,11 @@ public class ClinicPage extends AppCompatActivity {
                         }
                         else{
                             String queueStr = "0";
-                            NameLabel.setText("");
-                            IndexLabel.setText("");
+                            NameLabel.setVisibility(View.GONE);
+                            IndexLabel.setVisibility(View.GONE);
                             queueText.setText(queueStr);
-                            patientNames.setText("");
-                            patientIndex.setText("");
+                            patientNames.setVisibility(View.GONE);
+                            patientIndex.setVisibility(View.GONE);
                         }
                     }
 
@@ -346,4 +371,7 @@ public class ClinicPage extends AppCompatActivity {
             }
         });
     }
+
+
+
 }
