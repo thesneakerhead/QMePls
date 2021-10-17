@@ -60,8 +60,10 @@ public class PatientPage extends AppCompatActivity {
     private TextView ongoingText;
     private TextView recentText;
     private LinearLayout ongoingLayout, recentLayout;
+
     private int OngoingCardId;
     private ArrayList<SymptomCard> symptomCards;
+
 
     @SneakyThrows
     @Override
@@ -95,8 +97,6 @@ public class PatientPage extends AppCompatActivity {
         recentText = findViewById(R.id.recentText);
         ongoingLayout= findViewById(R.id.ongoingLayout);
         recentLayout= findViewById(R.id.recentLayout);
-
-
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,7 +213,6 @@ public class PatientPage extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
 
     }
 
