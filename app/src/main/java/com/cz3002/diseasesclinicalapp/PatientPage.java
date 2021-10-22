@@ -1,6 +1,7 @@
 package com.cz3002.diseasesclinicalapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.ObservableList;
@@ -10,7 +11,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,17 +63,20 @@ public class PatientPage extends AppCompatActivity {
     private TextView ongoingText;
     private TextView recentText;
     private LinearLayout ongoingLayout, recentLayout;
-
+    private String latestClinicUID;
     private int OngoingCardId;
     private ArrayList<SymptomCard> symptomCards;
-
+    private Button exitButton;
+    private Boolean isLeaveClicked;
+    private CardView card;
 
     @SneakyThrows
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbMngr = new FirebaseDatabaseManager(PatientPage.this);
-
+        exitButton = null;
+        card = null;
         setContentView(R.layout.profile__page);
         initPatientPage();
         HttpRequestHandler hndlr = new HttpRequestHandler();
@@ -80,6 +86,7 @@ public class PatientPage extends AppCompatActivity {
         nameText = findViewById(R.id.nameText);
         firebaseAuth = FirebaseAuth.getInstance();
         loggedInUser = firebaseAuth.getCurrentUser();
+        OngoingCardId = View.generateViewId();
 
 //        //cards
 //       profilecard1 = findViewById(R.id.profilecard1);
@@ -192,6 +199,7 @@ public class PatientPage extends AppCompatActivity {
                 }
                 else{
                     ongoingCard = null;
+                    ongoingLayout.removeAllViews();
                     ongoingText.setVisibility(View.GONE);
                     fab.setEnabled(true);
                 }
@@ -216,10 +224,34 @@ public class PatientPage extends AppCompatActivity {
     }
 
     private void displayOngoingCard() {
+        setupUI(getWindow().getDecorView());
         HttpRequestHandler hndler = new HttpRequestHandler();
         String clinicUID = ongoingCard.getClinicUID();
+        if (clinicUID!=null)
+        {
+            latestClinicUID = clinicUID;
+        }
         final View cardView = getLayoutInflater().inflate(R.layout.profile_card,null,false);
-        OngoingCardId = View.generateViewId();
+        card = cardView.findViewById(R.id.profilecard);
+        exitButton = cardView.findViewById(R.id.exitQueue);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @SneakyThrows
+            @Override
+            public void onClick(View v) {
+
+                hndler.cancelSelectPatient(clinicUID,loggedInUser.getUid());
+            }
+        });
+
+        card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isLeaveClicked = true;
+                exitButton.setVisibility(View.VISIBLE);
+
+            }
+        });
+        cardView.setId(OngoingCardId);
         cardView.setId(OngoingCardId);
         TextView clinicNameText,clinicAdrText,dateTimeText,queueText;
         ChipGroup chipGroup = cardView.findViewById(R.id.chip_group_profile);
@@ -257,7 +289,7 @@ public class PatientPage extends AppCompatActivity {
             }
         });
         DatabaseReference queueRef = dbMngr
-                .getDatabaseReference("clinic","clinicDictionary",clinicUID,"clinicQueue");
+                .getDatabaseReference("clinic","clinicDictionary",latestClinicUID,"clinicQueue");
         queueRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -271,7 +303,7 @@ public class PatientPage extends AppCompatActivity {
                     }
                     else if (queuePos < 0)
                     {
-                        dbMngr.getDatabaseReference("clinic","clinicDictionary",loggedInUser.getUid()
+                        dbMngr.getDatabaseReference("clinic","clinicDictionary",latestClinicUID
                                 ,"lastCancelledPatient")
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @SneakyThrows
@@ -281,6 +313,7 @@ public class PatientPage extends AppCompatActivity {
                                         String lastCancelledPatient = snapshot.getValue(t);
                                         if(lastCancelledPatient.equals(loggedInUser.getUid()))
                                         {
+                                            Log.d("cancelled not detected",lastCancelledPatient);
                                             ongoingCard.setStatus("Cancelled");//User was removed from the queue by the clinic
                                             hndler.clearCancelledPatient(clinicUID).thenApply(d->{
                                                 userDbRef.child("ongoingCard").setValue(null);
@@ -291,6 +324,7 @@ public class PatientPage extends AppCompatActivity {
                                             });
                                         }
                                         else{
+                                            Log.d("detected cancelled",lastCancelledPatient);
                                             ArrayList<SymptomCard> cards;
                                             if (curPatientUser.getSymptomCards()!=null){
                                             cards = curPatientUser.getSymptomCards();}
@@ -325,7 +359,7 @@ public class PatientPage extends AppCompatActivity {
 
                 }
                 else{
-                    dbMngr.getDatabaseReference("clinic","clinicDictionary",loggedInUser.getUid()
+                    dbMngr.getDatabaseReference("clinic","clinicDictionary", latestClinicUID
                             ,"lastCancelledPatient")
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @SneakyThrows
@@ -431,6 +465,7 @@ public class PatientPage extends AppCompatActivity {
 
     public void listenForQueueChanges(String clinicUID,String patientUID)
     {
+
         NotificationManager sendNoti = new NotificationManager(this);
         DatabaseReference dbRef = dbMngr.getDatabaseReference("clinic","clinicDictionary",clinicUID,"clinicQueue");
         dbRef.addValueEventListener(new ValueEventListener() {
@@ -566,4 +601,27 @@ public class PatientPage extends AppCompatActivity {
                     }
                 });
     }
+    private void setupUI(View v)
+    {
+        ViewGroup viewgroup=(ViewGroup)v;
+        for (int i=0;i<viewgroup.getChildCount();i++) {
+            View v1=viewgroup.getChildAt(i);
+            v1.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (exitButton!=null)
+                    {
+                        exitButton.setVisibility(View.GONE);
+                    }
+                    return false;
+                }
+            });
+            if (v1 instanceof ViewGroup) setupUI(v1);
+
+        }
+    }
+
+
+
+
 }
