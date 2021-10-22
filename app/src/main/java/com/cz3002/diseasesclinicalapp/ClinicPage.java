@@ -3,6 +3,8 @@ package com.cz3002.diseasesclinicalapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,7 +36,6 @@ import lombok.SneakyThrows;
 
 public class ClinicPage extends AppCompatActivity {
     private Button nextPatientButton;
-    private Button swapBtn, pushBtn;
     private Button walkInPatient;
     private TextView signoutButton;
     private TextView queueText;
@@ -54,11 +55,10 @@ public class ClinicPage extends AppCompatActivity {
     private ClinicUser curUser;
     private TextView NameLabel,IndexLabel;
     private String clinicUID;
-    private TableRow tableRow;
-    private LinearLayout tableRowLayout;
     private ImageView deletePatient, swapBackPatient;
-    private Button testButton;
-
+    private RecyclerViewEmptySupport itemRowView;
+    private QueueRowAdapter adapter;
+    private Button swapButton;
     //private List<String> names = new ArrayList<>();
     @SneakyThrows
     @Override
@@ -74,23 +74,21 @@ public class ClinicPage extends AppCompatActivity {
         nextPatientButton = findViewById(R.id.dequeue_button);
         signoutButton = findViewById(R.id.sign_out);
         queueText = findViewById(R.id.queue_text);
+        swapButton = findViewById(R.id.swapButton);
         patientNames = findViewById(R.id.patient_name);
         names = new ArrayList<>();
         patientIndex = findViewById(R.id.patient_index);
         index = new ArrayList<>();
         walkInPatient = findViewById(R.id.add_walkin);
         clinic_Name = findViewById(R.id.clinic_name);
-        pushBtn = findViewById(R.id.push_button);
         dialogBuilder = new AlertDialog.Builder(this);
-        tableRowLayout= findViewById(R.id.tableRowLayout);
         swapBackPatient= findViewById(R.id.swapBackPatient);
         deletePatient= findViewById(R.id.deletePatient);
-        testButton= findViewById(R.id.test_button);
-
-        final View table_row = getLayoutInflater().inflate(R.layout.table_row,null,false);
-        tableRow= tableRowLayout.findViewById(R.id.tableRow);
-
-
+        itemRowView = findViewById(R.id.queueView);
+        //itemRowView.setEmptyView(findViewById(R.id.list_empty));
+        adapter = new QueueRowAdapter();
+        itemRowView.setAdapter(adapter);
+        itemRowView.setLayoutManager(new LinearLayoutManager(this));
         dbMngr.getDatabaseReference("app","Users",mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -99,6 +97,7 @@ public class ClinicPage extends AppCompatActivity {
                 {
                     curUser = snapshot.getValue(ClinicUser.class);
                     clinicUID = curUser.getClinicUID();
+                    adapter.setClinicUID(clinicUID);
                     setClinicName(clinicUID);
                     listenForQueueChanges(clinicUID);
                     nextPatientButton.setOnClickListener(new View.OnClickListener() {
@@ -107,11 +106,21 @@ public class ClinicPage extends AppCompatActivity {
                             nextPatient();
                         }
                     });
+                    swapButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            pushPatient();
+                        }
+                    });
+
+
                 }
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
 
             }
         });
@@ -131,31 +140,7 @@ public class ClinicPage extends AppCompatActivity {
         });
 
 
-        pushBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pushPatient();
-            }
-        });
-//        swapBackPatient.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                pushPatient();
-//            }
-//        });
 
-
-        //table clickable
-        testButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // TEXTVIEW
-                if(table_row.getParent() != null) {
-                    ((ViewGroup)table_row.getParent()).removeView(table_row); // <- fix
-                }
-                tableRowLayout.addView(table_row);
-
-            }
-        });
 
     }
 
@@ -169,50 +154,24 @@ public class ClinicPage extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.getValue()!=null){
-                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                        if (snapshot.getValue()!=null) {
+                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {
+                            };
                             ArrayList<String> queue = snapshot.getValue(t);
-                            //set display text to number of people in the queue
+                            //set display text to number of people in the queue\
+                            queueText.setText(String.valueOf(queue.size()));
                             dbMngr.getNameDictionary()
                                     .thenApply(nameDict -> {
-                                        ArrayList<String> patientsNames = new ArrayList<String>();
-                                        Integer count = 0;
-                                        for (String uid : queue)
-                                        {
-                                            String name = nameDict.get(uid);
-                                            if(name!=null)
-                                            {patientsNames.add(name);}
-                                            else{
-                                                patientsNames.add(uid);
-                                            }
-                                        }
-                                        String nameStr = "";
-                                        String indexStr = "";
-                                        for (String i : patientsNames){
-                                            nameStr = nameStr + i + "\n";
-                                            count += 1;
-                                            indexStr = indexStr + count + "\n";
-                                        }
-                                        NameLabel.setVisibility(View.VISIBLE);
-                                        IndexLabel.setVisibility(View.VISIBLE);
-                                        patientNames.setVisibility(View.VISIBLE);
-                                        patientIndex.setVisibility(View.VISIBLE);
-                                        patientNames.setText(nameStr);
-                                        patientIndex.setText(indexStr);
-
-                                        return null;
-                                    } );
-                            String queueStr = String.valueOf(queue.size());
-                            queueText.setText(queueStr);
-
+                                        adapter.setNameDict(nameDict);
+                                        adapter.setQueue(queue);
+                                    return null;
+                                    });
                         }
                         else{
-                            String queueStr = "0";
-                            NameLabel.setVisibility(View.GONE);
-                            IndexLabel.setVisibility(View.GONE);
-                            queueText.setText(queueStr);
-                            patientNames.setVisibility(View.GONE);
-                            patientIndex.setVisibility(View.GONE);
+                            queueText.setText("No one in queue");
+                               // Log.d("empty queue", "here");
+                                adapter.setQueue(null);
+                                //itemRowView.setEmptyView(findViewById(R.id.list_empty));
                         }
                     }
 
@@ -367,6 +326,8 @@ public class ClinicPage extends AppCompatActivity {
             @SneakyThrows
             @Override
             public void onClick(View v) {
+                HttpRequestHandler hndlr = new HttpRequestHandler();
+                hndlr.swapPatients(clinicUID);
                 dialog.dismiss();
             }
         });

@@ -199,8 +199,7 @@ public class PatientPage extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                ongoingCard = null;
-                fab.setEnabled(true);
+
             }
         });
 
@@ -287,6 +286,7 @@ public class PatientPage extends AppCompatActivity {
                                                 userDbRef.child("ongoingCard").setValue(null);
                                                 View ongoingView = ongoingLayout.findViewById(OngoingCardId);
                                                 ongoingLayout.removeView(ongoingView);
+                                                fab.setEnabled(true);
                                                 return null;
                                             });
                                         }

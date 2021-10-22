@@ -97,6 +97,15 @@ public class HttpRequestHandler {
                 CompletableFuture.supplyAsync(() ->post("https://asia-southeast1-clinicaldatabase-49662.cloudfunctions.net/cancelSelectPatient",json));
         return completableFuture;
     }
+    public CompletableFuture<String> delByQueuePos(String clinicUID, String queuePos) throws JsonProcessingException {
+        Map<String,String> payload = new HashMap<>();
+        payload.put("clinicUID",clinicUID);
+        payload.put("queuePos",queuePos);
+        String json = new ObjectMapper().writeValueAsString(payload);
+        CompletableFuture<String> completableFuture =
+                CompletableFuture.supplyAsync(() ->post("https://asia-southeast1-clinicaldatabase-49662.cloudfunctions.net/delByQueuePos",json));
+        return completableFuture;
+    }
 
 
 
