@@ -190,7 +190,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             System.out.println("true");
                             bottombar = findViewById(R.id.bottombar);
                             ViewGroup.LayoutParams bottombar2 = bottombar.getLayoutParams();
-                            bottombar2.height = 1700;
+                            bottombar2.height = 1400;
                             bottombar.setLayoutParams(bottombar2);
                             minimized=false;
                             enableScroll();
@@ -199,7 +199,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             System.out.println("false");
                             bottombar = findViewById(R.id.bottombar);
                             ViewGroup.LayoutParams bottombar2 = bottombar.getLayoutParams();
-                            bottombar2.height = 300;
+                            bottombar2.height = 200;
                             bottombar.setLayoutParams(bottombar2);
                             minimized=true;
                             disableScroll();
