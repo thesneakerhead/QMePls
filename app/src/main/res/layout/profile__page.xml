@@ -156,7 +156,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="10dp"
-                android:text="Recent"
+                android:text="History"
                 android:textAppearance="?attr/textAppearanceBody2"
                 android:textColor="@color/cobalt"
                 android:textStyle="bold"

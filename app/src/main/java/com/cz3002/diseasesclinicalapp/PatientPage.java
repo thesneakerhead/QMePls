@@ -224,6 +224,7 @@ public class PatientPage extends AppCompatActivity {
     }
 
     private void displayOngoingCard() {
+        NotificationManager sendNoti = new NotificationManager(this);
         setupUI(getWindow().getDecorView());
         HttpRequestHandler hndler = new HttpRequestHandler();
         String clinicUID = ongoingCard.getClinicUID();
@@ -291,8 +292,10 @@ public class PatientPage extends AppCompatActivity {
         DatabaseReference queueRef = dbMngr
                 .getDatabaseReference("clinic","clinicDictionary",latestClinicUID,"clinicQueue");
         queueRef.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 if (snapshot.getValue()!=null) {
                     GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                     ArrayList<String> queue = snapshot.getValue(t);
@@ -301,6 +304,12 @@ public class PatientPage extends AppCompatActivity {
                     {
                         queueText.setText("Its Your Turn!");
                     }
+                    else if (queuePos.equals(1))
+                    {
+                        System.out.println("entered");
+                        sendNoti.sendNotification();
+                    }
+
                     else if (queuePos < 0)
                     {
                         dbMngr.getDatabaseReference("clinic","clinicDictionary",latestClinicUID
@@ -352,7 +361,7 @@ public class PatientPage extends AppCompatActivity {
                     }
                     else
                     {
-                        String posText = String.valueOf(queuePos) + "Ahead of you";
+                        String posText = String.valueOf(queuePos) + " Ahead of you";
                         queueText.setText(posText);
                     }
 
@@ -466,7 +475,7 @@ public class PatientPage extends AppCompatActivity {
     public void listenForQueueChanges(String clinicUID,String patientUID)
     {
 
-        NotificationManager sendNoti = new NotificationManager(this);
+
         DatabaseReference dbRef = dbMngr.getDatabaseReference("clinic","clinicDictionary",clinicUID,"clinicQueue");
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -506,10 +515,7 @@ public class PatientPage extends AppCompatActivity {
                                         }
                                     });
                         }
-                        else if (queuePos.equals(1))
-                        {
-                            sendNoti.sendNotification();
-                        }
+
 
                         else if(queuePos.equals(0))
                         {
