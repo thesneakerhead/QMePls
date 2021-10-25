@@ -158,6 +158,7 @@ public class SymptomSearch extends AppCompatActivity {
                 Log.d(TAG, selectedSymptom);
                 if (selectedListOfSymptoms.size()<5)
                 {
+                    chip_group.setVisibility(View.VISIBLE);
                     if (selectedListOfSymptoms.contains(selectedSymptom) == false) {
                         selectedListOfSymptoms.add(selectedSymptom);
                         Log.d("checkList", selectedListOfSymptoms.toString());
@@ -182,6 +183,10 @@ public class SymptomSearch extends AppCompatActivity {
                         chip_group.removeView(v);
                         if(selectedListOfSymptoms.contains(tempChip.getText())){
                             selectedListOfSymptoms.remove(tempChip.getText());
+                            if (selectedListOfSymptoms.size()==0)
+                            {
+                                chip_group.setVisibility(View.GONE);
+                            }
                         }
                         Log.d(TAG, "onClick: remaining list" + selectedListOfSymptoms.toString());
                     }

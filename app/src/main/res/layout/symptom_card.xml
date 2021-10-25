@@ -8,11 +8,12 @@
     >
     <!--    Symptom Card -->
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="20dp"
+        android:layout_gravity="center"
         >
 
         <LinearLayout
@@ -20,13 +21,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <LinearLayout
+          <!--  <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="30dp">
 
-                <!-- Title, secondary and supporting text -->
+                &lt;!&ndash; Title, secondary and supporting text &ndash;&gt;
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -40,9 +41,10 @@
                     android:textAppearance="?attr/textAppearanceOverline"
                     android:textColor="?android:attr/textColorSecondary" />
 
-            </LinearLayout>
+            </LinearLayout>-->
 
             <com.google.android.material.chip.ChipGroup
+                android:visibility="gone"
                 android:id="@+id/chip_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
