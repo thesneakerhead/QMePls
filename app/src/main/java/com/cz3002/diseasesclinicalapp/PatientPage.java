@@ -306,6 +306,8 @@ public class PatientPage extends AppCompatActivity {
                     }
                     else if (queuePos.equals(1))
                     {
+                        String posText = String.valueOf(queuePos) + " Ahead of you";
+                        queueText.setText(posText);
                         System.out.println("entered");
                         sendNoti.sendNotification();
                     }

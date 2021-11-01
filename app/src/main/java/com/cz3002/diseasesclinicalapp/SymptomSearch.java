@@ -153,6 +153,7 @@ public class SymptomSearch extends AppCompatActivity {
             Chip chip;
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                chip_group.setVisibility(View.VISIBLE);
                 String selectedSymptom = listViewTop.getItemAtPosition(position).toString();
                 editText.getText().clear();
                 Log.d(TAG, selectedSymptom);
